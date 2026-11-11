@@ -1,0 +1,42 @@
+# ==============================================================================
+# EDOCENTIA EN VÍDEO - CATÁLOGO DE ENLACES DE VÍDEOS
+# Materiales creados por Ana H. Iranzo
+# ==============================================================================
+# Instrucciones:
+# 1. Pega la URL del vídeo correspondiente al final de cada línea (después del =).
+# 2. Guarda este archivo.
+# 3. Ejecuta en PowerShell: .\actualizar_enlaces.ps1
+#    El script actualizará index.html y te permitirá subir los cambios a GitHub automáticamente.
+# ==============================================================================
+
+TEMPORADA 1: Fundamentos de IA y uso responsable
+T1E1 - IA en el aula: lo que nadie te ha contado = https://youtu.be/Gcpd-rXg8Bk
+T1E2 - El mapa de la IA: qué herramienta usar y cuándo = 
+T1E3 - El arte del prompt: pide y se te dará = 
+T1E4 - Tus datos, a salvo: privacidad y RGPD = 
+T1E5 - Alucinaciones y sesgos: cuando la IA miente = 
+T1E6 - Reglas del juego: ética de la IA en clase = 
+
+TEMPORADA 2: Herramientas de IA para crear materiales
+T2E1 - Presentaciones en 5 minutos con Gamma = 
+T2E2 - Copilot: tu ayudante en Microsoft 365 = 
+T2E3 - Gemini: de la idea al material = 
+T2E4 - Canva Magic Studio: diseña sin ser diseñador = 
+T2E5 - Imágenes con IA que enamoran = 
+T2E6 - NotebookLM: tus apuntes hechos podcast = 
+
+TEMPORADA 3: Recursos interactivos con vibe coding
+T3E1 - Vibe coding: programa sin saber programar = 
+T3E2 - Tu primer juego educativo en 10 minutos = 
+T3E3 - Quizzes que enganchan = 
+T3E4 - Simuladores: la ciencia que se toca = 
+T3E5 - Escape room digital para tu aula = 
+T3E6 - Pule y publica tu app educativa = 
+
+TEMPORADA 4: Inteligencia artificial y Aules
+T4E1 - Aules a tu medida: un aula que inspira = 
+T4E2 - HTML en Aules: incrusta tus creaciones = 
+T4E3 - SCORM sin miedo: actividades que califican solas = 
+T4E4 - GIFT + IA: 100 preguntas en 1 minuto = 
+T4E5 - Actividades interactivas que enganchan = 
+T4E6 - Evaluar mejor en menos tiempo = 

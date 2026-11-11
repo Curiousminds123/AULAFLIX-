@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edocentia en vídeo · IA para docentes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0b0f; --panel:#16161d; --text:#f4f4f6; --muted:#a3a3b2; --accent:#ff3d4a; --accent-hover:#ff5763;
+    --green:#46d369;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;gap:24px;padding:16px 4vw;
+      background:linear-gradient(180deg,rgba(0,0,0,.88),rgba(0,0,0,0));transition:background .3s}
+  nav.solid{background:#0b0b0f}
+  .logo{font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:32px;letter-spacing:2px;color:var(--accent);line-height:1;display:flex;align-items:center;gap:6px}
+  .logo span{color:#fff;font-size:24px;letter-spacing:1px;font-weight:400}
+  .navlinks{display:flex;gap:20px;font-size:14px;color:#ddd}
+  .navlinks a:hover{color:#fff}
+  .nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+  .search{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.5);border:1px solid #444;border-radius:4px;padding:6px 10px}
+  .search input{background:none;border:none;outline:none;color:#fff;font-size:14px;width:170px}
+  .btn-nav-manage{background:#22222e;color:#fff;border:1px solid #444;border-radius:4px;padding:6px 12px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;transition:all .2s}
+  .btn-nav-manage:hover{background:var(--accent);border-color:var(--accent)}
+  @media(max-width:900px){.navlinks{display:none}.search input{width:110px}}
+
+  /* HERO */
+  .hero{position:relative;height:82vh;min-height:520px;display:flex;align-items:flex-end;padding:0 4vw 12vh;overflow:hidden}
+  .hero-bg{position:absolute;inset:0;z-index:0}
+  .hero-bg .cover{width:100%;height:100%;border-radius:0}
+  .hero-bg .cover .c-title,.hero-bg .cover .c-tag{display:none}
+  .hero-bg .cover .c-emoji{font-size:min(38vw,420px);right:6vw;bottom:8vh;opacity:.9}
+  .hero-bg .cover .c-num{font-size:min(60vw,700px);right:-2vw;top:-10vh}
+  .hero::after{content:"";position:absolute;inset:0;z-index:1;
+     background:linear-gradient(90deg,rgba(11,11,15,.95) 0%,rgba(11,11,15,.6) 45%,rgba(11,11,15,0) 75%),
+                linear-gradient(0deg,var(--bg) 0%,rgba(11,11,15,0) 35%)}
+  .hero-content{position:relative;z-index:2;max-width:620px}
+  .badge{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:3px;color:#ddd;margin-bottom:14px}
+  .badge b{background:var(--accent);color:#fff;padding:3px 7px;border-radius:2px;letter-spacing:1px}
+  .hero h1{font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:clamp(48px,7vw,96px);line-height:.92;letter-spacing:1px;margin-bottom:16px}
+  .hero p{font-size:clamp(15px,1.4vw,18px);line-height:1.5;color:#e2e2e8;margin-bottom:24px;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+  .btns{display:flex;gap:12px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 26px;border-radius:5px;font-weight:700;font-size:17px;border:none}
+  .btn-play{background:#fff;color:#000}
+  .btn-play:hover{background:#ddd}
+  .btn-info{background:rgba(109,109,110,.7);color:#fff}
+  .btn-info:hover{background:rgba(109,109,110,.5)}
+  .btn.disabled{opacity:.5;pointer-events:none}
+
+  /* ROWS */
+  main{position:relative;z-index:3;margin-top:-8vh;padding-bottom:60px}
+  .row{margin:0 0 42px;scroll-margin-top:80px}
+  .row-head{padding:0 4vw;margin-bottom:12px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .row-head h2{font-size:clamp(18px,1.8vw,24px);font-weight:800}
+  .row-head .mod{font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:20px;letter-spacing:2px;padding:2px 8px;border-radius:3px;color:#fff}
+  .row-head small{color:var(--muted);font-size:13px;flex-basis:100%}
+  .track-wrap{position:relative}
+  .track{display:flex;gap:10px;overflow-x:auto;scroll-behavior:smooth;padding:14px 4vw 22px;scrollbar-width:none}
+  .track::-webkit-scrollbar{display:none}
+  .arrow{position:absolute;top:14px;bottom:22px;width:4vw;min-width:36px;z-index:5;border:none;background:rgba(0,0,0,.55);color:#fff;font-size:30px;opacity:0;transition:opacity .2s}
+  .track-wrap:hover .arrow{opacity:1}
+  .arrow.l{left:0}.arrow.r{right:0}
+
+  .card{flex:0 0 clamp(230px,22vw,330px);cursor:pointer;transition:transform .25s ease, box-shadow .25s;border-radius:6px;position:relative}
+  .card:hover{transform:scale(1.07);z-index:4;box-shadow:0 14px 40px rgba(0,0,0,.7)}
+  .card .meta{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);padding:8px 2px 0}
+  .card .state{font-weight:700}
+  .card .state.on{color:var(--green)}
+  .card .state.off{color:#888}
+  .rank{position:absolute;top:8px;right:8px;z-index:3;background:var(--accent);color:#fff;font-size:11px;font-weight:800;padding:3px 6px;border-radius:3px;letter-spacing:.5px}
+
+  /* COVER */
+  .cover{position:relative;aspect-ratio:16/9;border-radius:6px;overflow:hidden;isolation:isolate}
+  .cover .pat{position:absolute;inset:0;z-index:0;opacity:.35}
+  .cover .c-num{position:absolute;right:-6%;top:-22%;font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:190px;line-height:1;color:transparent;
+      -webkit-text-stroke:2px rgba(255,255,255,.28);z-index:1;user-select:none}
+  .cover .c-emoji{position:absolute;right:7%;bottom:14%;font-size:64px;z-index:2;filter:drop-shadow(0 6px 14px rgba(0,0,0,.45));transform:rotate(-8deg)}
+  .cover .c-tag{position:absolute;top:9%;left:6%;z-index:3;font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:15px;letter-spacing:2px;background:rgba(0,0,0,.45);padding:2px 7px;border-radius:2px}
+  .cover .c-title{position:absolute;left:6%;bottom:8%;right:38%;z-index:3;font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:clamp(20px,1.9vw,28px);line-height:.95;letter-spacing:.5px;
+      text-shadow:0 2px 10px rgba(0,0,0,.55)}
+  .cover .c-title em{font-style:normal;display:block;color:var(--hl,#fff)}
+  .cover::after{content:"";position:absolute;inset:0;z-index:2;background:linear-gradient(0deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,0) 60%)}
+  .card .rank ~ .cover .logo-mini{display:none}
+  .cover .logo-mini{position:absolute;top:9%;right:6%;z-index:3;font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:14px;color:var(--accent);letter-spacing:1px}
+
+  /* MODAL */
+  .modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.8);display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:5vh 16px}
+  .modal.open{display:flex}
+  .sheet{width:min(860px,100%);background:var(--panel);border-radius:10px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.8);animation:pop .25s ease;position:relative}
+  @keyframes pop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+  .sheet-top{position:relative}
+  .sheet-top .cover{border-radius:0}
+  .sheet-top .cover .c-title{font-size:clamp(30px,4.6vw,58px);right:35%}
+  .sheet-top .cover .c-emoji{font-size:clamp(70px,11vw,130px)}
+  .sheet-top .cover .c-num{font-size:clamp(220px,40vw,420px)}
+  .close{position:absolute;top:14px;right:14px;z-index:10;width:38px;height:38px;border-radius:50%;border:none;background:#181818;color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center}
+  .close:hover{background:#333}
+  .sheet-body{padding:24px 30px 30px}
+  .sheet-body .btns{margin-bottom:20px}
+  .sheet-body h3{font-size:24px;margin-bottom:6px}
+  .sheet-body .sub{color:var(--green);font-weight:700;font-size:14px;margin-bottom:14px}
+  .sheet-body p{color:#d6d6de;line-height:1.6;margin-bottom:14px}
+  .sheet-body ul{margin:0 0 18px 18px;color:#c9c9d3;line-height:1.7}
+  .edit{border-top:1px solid #2c2c36;padding-top:16px;margin-top:6px}
+  .edit label{font-size:13px;color:var(--muted);display:block;margin-bottom:8px}
+  .edit .f{display:flex;gap:8px;flex-wrap:wrap}
+  .edit input{flex:1;min-width:220px;background:#0e0e13;border:1px solid #3a3a46;color:#fff;border-radius:4px;padding:10px 12px;font-size:14px}
+  .edit button{background:#2b2b35;color:#fff;border:1px solid #444;border-radius:4px;padding:10px 14px;font-size:14px;font-weight:600}
+  .edit button:hover{background:#383844}
+  .edit-subactions{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap}
+  .btn-download-html{background:var(--accent);color:#fff;border:none;padding:8px 14px;border-radius:4px;font-size:13px;font-weight:700}
+  .btn-download-html:hover{background:var(--accent-hover)}
+
+  /* GESTOR GENERAL DE ENLACES MODAL */
+  .manage-sheet{width:min(940px,96vw);background:var(--panel);border-radius:12px;padding:26px;color:#fff;max-height:90vh;overflow-y:auto;box-shadow:0 30px 90px rgba(0,0,0,.9);position:relative}
+  .manage-sheet h2{font-size:24px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  .manage-sheet p.intro{color:var(--muted);font-size:14px;margin-bottom:20px;line-height:1.5}
+  .bulk-box{background:#111116;border:1px solid #2f2f3d;border-radius:8px;padding:16px;margin-bottom:24px}
+  .bulk-box h4{font-size:15px;margin-bottom:6px;color:#e8e8ee}
+  .bulk-box textarea{width:100%;height:100px;background:#09090c;border:1px solid #3a3a48;border-radius:4px;color:#fff;padding:10px;font-family:monospace;font-size:12px;resize:vertical;margin-bottom:10px}
+  .bulk-box .btn-row{display:flex;gap:10px;flex-wrap:wrap}
+  .m-group{margin-bottom:24px;border:1px solid #272733;border-radius:8px;overflow:hidden}
+  .m-group-header{background:#1a1a24;padding:10px 16px;font-weight:700;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+  .m-ep-row{display:flex;align-items:center;gap:12px;padding:10px 16px;border-top:1px solid #20202c;font-size:13px}
+  .m-ep-row:nth-child(even){background:rgba(255,255,255,.015)}
+  .m-ep-row .tag{min-width:60px;font-weight:700;color:var(--accent)}
+  .m-ep-row .title{flex:1;color:#eee;min-width:180px}
+  .m-ep-row input{flex:2;min-width:240px;background:#0c0c10;border:1px solid #383844;color:#fff;padding:6px 10px;border-radius:4px;font-size:13px}
+  .m-ep-row .badge-status{font-size:11px;font-weight:700;padding:3px 6px;border-radius:3px;min-width:70px;text-align:center}
+  .badge-status.ready{background:rgba(70,211,105,.2);color:#46d369}
+  .badge-status.empty{background:rgba(255,255,255,.1);color:#888}
+  .manage-footer{position:sticky;bottom:-26px;background:var(--panel);padding:16px 0 0;margin-top:20px;border-top:1px solid #2e2e3c;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);background:#fff;color:#000;padding:12px 22px;border-radius:6px;font-weight:700;z-index:200;transition:transform .3s;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+
+  /* FOOTER */
+  footer{padding:40px 4vw 60px;color:var(--muted);font-size:13px;border-top:1px solid #1d1d25;background:#08080c}
+  .footer-wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:30px;flex-wrap:wrap}
+  .footer-main{max-width:640px}
+  .footer-brand{font-family:'Bebas Neue',Impact,sans-serif;font-size:26px;color:var(--accent);letter-spacing:1.5px;margin-bottom:8px}
+  .footer-brand span{color:#fff}
+  .footer-desc{line-height:1.6;margin-bottom:12px;color:#b2b2c0}
+  .footer-credit{color:#fff;font-size:15px;background:rgba(255,255,255,.05);padding:8px 14px;border-radius:6px;display:inline-block;border-left:3px solid var(--accent);margin-top:4px}
+  .footer-credit strong{color:#fff}
+  .footer-tools{display:flex;flex-direction:column;gap:10px;min-width:220px}
+  .f-btn{background:#181822;border:1px solid #3c3c4a;color:#eee;padding:9px 14px;border-radius:6px;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+  .f-btn:hover{background:#262636;color:#fff;border-color:#555}
+  .f-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .f-btn.primary:hover{background:var(--accent-hover)}
+
+  .empty{padding:0 4vw;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="logo">EDOCENTIA <span>EN VÍDEO</span></div>
+  <div class="navlinks">
+    <a href="#m1">Fundamentos</a>
+    <a href="#m2">Crear materiales</a>
+    <a href="#m3">Vibe coding</a>
+    <a href="#m4">IA y Aules</a>
+  </div>
+  <div class="nav-right">
+    <label class="search">🔍<input id="q" type="search" placeholder="Buscar vídeos…"></label>
+    <button id="openManagerNav" class="btn-nav-manage" onclick="openManagerModal()">⚙️ Gestionar enlaces</button>
+  </div>
+</nav>
+
+<header class="hero" id="hero"></header>
+<main id="rows"></main>
+
+<footer>
+  <div class="footer-wrap">
+    <div class="footer-main">
+      <div class="footer-brand">EDOCENTIA <span>EN VÍDEO</span></div>
+      <p class="footer-desc">Curso de Inteligencia Artificial para docentes · Formación práctica con videotutoriales y espacio de pruebas en Aules.</p>
+      <div class="footer-credit">✨ <strong>Materiales creados por Ana H. Iranzo</strong></div>
+    </div>
+    <div class="footer-tools">
+      <button class="f-btn primary" onclick="openManagerModal()">⚙️ Gestionar todos los enlaces</button>
+      <button id="copyLinks" class="f-btn">📋 Copiar todos los enlaces</button>
+      <button class="f-btn" onclick="downloadCurrentHtml()">💾 Descargar index.html actualizado</button>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL EPISODIO -->
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+
+<!-- MODAL GESTOR GENERAL DE ENLACES -->
+<div class="modal" id="manageModal">
+  <div class="manage-sheet">
+    <button class="close" onclick="closeManagerModal()">✕</button>
+    <h2>⚙️ Gestor de Enlaces del Catálogo</h2>
+    <p class="intro">Introduce o actualiza los links de los 24 episodios. Puedes guardar y <strong>descargar la web actualizada (index.html)</strong> directamente para que conserve todos los nuevos links permanentemente.</p>
+
+    <div class="bulk-box">
+      <h4>📥 Importar lista rápida de enlaces (desde archivo de texto)</h4>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Pega aquí el contenido de <code>Lista de videos para el catalogo de AULAXLIX.txt</code> o una lista de URLs en orden:</p>
+      <textarea id="bulkInput" placeholder="T1E1 = https://youtu.be/...&#10;T1E2 = https://youtu.be/..."></textarea>
+      <div class="btn-row">
+        <button class="f-btn primary" onclick="processBulkLinks()">Procesar y aplicar enlaces</button>
+        <button class="f-btn" onclick="populateBulkFromCurrent()">Cargar enlaces actuales en el recuadro</button>
+      </div>
+    </div>
+
+    <div id="manageGrid"></div>
+
+    <div class="manage-footer">
+      <span style="font-size:13px;color:var(--muted)">Edocentia en vídeo · Materiales creados por Ana H. Iranzo</span>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="f-btn" onclick="saveAllFromManager(false)">Guardar cambios</button>
+        <button class="f-btn primary" onclick="saveAllFromManager(true)">💾 Guardar y Descargar index.html</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   CONTENIDOS — EDOCENTIA EN VÍDEO
+   Materiales creados por Ana H. Iranzo
+   ========================================================= */
+const MODULES = [
+  { id:"m1", n:1, name:"Fundamentos de IA y uso responsable",
+    desc:"Introducción a la IA en educación, principales herramientas, privacidad, protección de datos y uso ético y seguro.",
+    c1:"#3a0ca3", c2:"#7209b7", hl:"#ffd166", pat:"dots",
+    videos:[
+      {t:"IA en el aula:|lo que nadie te ha contado", e:"🧠", url:"https://youtu.be/Gcpd-rXg8Bk",
+       d:"Qué es realmente la inteligencia artificial generativa, qué puede y qué no puede hacer, y por qué va a cambiar tu forma de preparar las clases.",
+       pts:["Qué es la IA generativa explicado sin tecnicismos","Mitos y realidades en educación","Primeros usos útiles para un docente"]},
+      {t:"El mapa de la IA:|qué herramienta usar y cuándo", e:"🗺️", url:"",
+       d:"Un recorrido rápido por ChatGPT, Copilot, Gemini, Claude, NotebookLM, Canva y Gamma para que sepas cuál elegir en cada situación.",
+       pts:["Chatbots, generadores de imagen y asistentes","Versiones gratuitas y cuentas educativas","Tabla de decisión rápida"]},
+      {t:"El arte del prompt:|pide y se te dará", e:"✍️", url:"",
+       d:"Aprende a escribir instrucciones claras que den resultados de calidad a la primera: rol, contexto, tarea, formato y ejemplos.",
+       pts:["Fórmula de prompt para docentes","Iterar y refinar respuestas","Biblioteca de prompts para el aula"]},
+      {t:"Tus datos, a salvo:|privacidad y RGPD", e:"🔒", url:"",
+       d:"Qué información nunca debes introducir en una IA, cómo anonimizar datos del alumnado y qué dice la normativa de protección de datos.",
+       pts:["Datos personales y datos sensibles","Cómo anonimizar antes de usar la IA","Configuración de privacidad de cada herramienta"]},
+      {t:"Alucinaciones y sesgos:|cuando la IA miente", e:"🕵️", url:"",
+       d:"La IA puede inventarse datos con total seguridad. Aprende a detectar errores, contrastar fuentes y enseñar pensamiento crítico.",
+       pts:["Por qué alucina la IA","Detectar sesgos en las respuestas","Estrategias de verificación"]},
+      {t:"Reglas del juego:|ética de la IA en clase", e:"⚖️", url:"",
+       d:"Cómo pactar con tu alumnado un uso honesto y responsable de la IA: normas de aula, autoría, plagio y evaluación justa.",
+       pts:["Semáforo de uso de la IA en tareas","Citar y declarar el uso de IA","Plantilla de normas para el aula"]}
+    ]},
+  { id:"m2", n:2, name:"Herramientas de IA para crear materiales",
+    desc:"Presentaciones, imágenes y materiales educativos más visuales y atractivos con Copilot, Gemini, Canva, Gamma y NotebookLM.",
+    c1:"#f72585", c2:"#ff8c42", hl:"#fff3b0", pat:"stripes",
+    videos:[
+      {t:"Presentaciones en|5 minutos con Gamma", e:"⚡", url:"",
+       d:"De un simple tema a una presentación completa y con diseño profesional en minutos. Edita, ajusta el estilo y exporta.",
+       pts:["Generar desde un tema o un documento","Editar tarjetas y diseño","Exportar a PDF o PowerPoint"]},
+      {t:"Copilot:|tu ayudante en Microsoft 365", e:"🤖", url:"",
+       d:"Usa Copilot para redactar, resumir, crear presentaciones y generar imágenes desde las herramientas de Microsoft que ya conoces.",
+       pts:["Copilot en Word y PowerPoint","Resúmenes y adaptaciones de texto","Imágenes con Designer"]},
+      {t:"Gemini:|de la idea al material", e:"✨", url:"",
+       d:"Fichas, rúbricas, actividades por niveles y Gems personalizados: saca todo el partido a Gemini y Google Workspace.",
+       pts:["Generar fichas y rúbricas","Crear un Gem docente","Exportar a Docs y Presentaciones"]},
+      {t:"Canva Magic Studio:|diseña sin ser diseñador", e:"🎨", url:"",
+       d:"Infografías, carteles y fichas visuales con las herramientas mágicas de Canva para Educación.",
+       pts:["Magic Design y Magic Write","Plantillas educativas","Compartir con el alumnado"]},
+      {t:"Imágenes con IA|que enamoran", e:"🖼️", url:"",
+       d:"Crea ilustraciones, escenas y personajes para tus materiales con prompts visuales efectivos, respetando derechos y licencias.",
+       pts:["Prompts para imágenes: estilo, encuadre, luz","Coherencia entre imágenes","Uso legal y responsable"]},
+      {t:"NotebookLM:|tus apuntes hechos podcast", e:"🎧", url:"",
+       d:"Sube tus documentos y conviértelos en resúmenes, guías de estudio, mapas mentales y podcasts generados por IA.",
+       pts:["Crear un cuaderno con tus fuentes","Resumen en audio y mapa mental","Guías de estudio para el alumnado"]}
+    ]},
+  { id:"m3", n:3, name:"Recursos interactivos con vibe coding",
+    desc:"Juegos, cuestionarios, simuladores y pequeñas apps educativas creadas con IA, sin necesidad de saber programar.",
+    c1:"#06d6a0", c2:"#118ab2", hl:"#ffe66d", pat:"grid",
+    videos:[
+      {t:"Vibe coding:|programa sin saber programar", e:"🪄", url:"",
+       d:"Descubre el vibe coding: describes lo que quieres en lenguaje natural y la IA escribe el código. Tu primera app en directo.",
+       pts:["Qué es el vibe coding","Herramientas: Claude, Gemini Canvas, ChatGPT","Tu primera página interactiva"]},
+      {t:"Tu primer juego|educativo en 10 minutos", e:"🎮", url:"",
+       d:"Crea un juego de vocabulario, de memoria o de preguntas totalmente funcional describiéndolo paso a paso.",
+       pts:["Juego de parejas y ruleta","Añadir puntuación y sonidos","Probar y corregir errores"]},
+      {t:"Quizzes que|enganchan", e:"❓", url:"",
+       d:"Cuestionarios interactivos con temporizador, feedback inmediato y retos por niveles que tus alumnos querrán repetir.",
+       pts:["Tipos de pregunta y feedback","Niveles y temporizador","Personalizar diseño y colores"]},
+      {t:"Simuladores:|la ciencia que se toca", e:"🧪", url:"",
+       d:"Construye simuladores para experimentar con variables: física, matemáticas, economía o lo que imagines.",
+       pts:["Deslizadores y gráficas en vivo","Ideas por materia","Guía didáctica del simulador"]},
+      {t:"Escape room|digital para tu aula", e:"🗝️", url:"",
+       d:"Diseña un escape room con enigmas encadenados, candados y pistas, todo en una sola página web.",
+       pts:["Narrativa y estructura de retos","Candados y códigos","Final y recompensas"]},
+      {t:"Pule y publica|tu app educativa", e:"🚀", url:"",
+       d:"Mejora el diseño, corrige errores, haz tu app accesible y prepárala para compartirla o subirla a Aules.",
+       pts:["Depurar con la ayuda de la IA","Diseño responsive y accesible","Guardar como archivo HTML"]}
+    ]},
+  { id:"m4", n:4, name:"Inteligencia artificial y Aules",
+    desc:"Integración de recursos en Aules mediante HTML, SCORM, GIFT y otros formatos. Personalización del aula, actividades interactivas y evaluación.",
+    c1:"#ef233c", c2:"#5a189a", hl:"#8ecae6", pat:"waves",
+    videos:[
+      {t:"Aules a tu medida:|un aula que inspira", e:"🏫", url:"",
+       d:"Personaliza tu curso de Aules con banners, etiquetas, botones y una estructura clara creados con ayuda de la IA.",
+       pts:["Cabeceras y banners con IA","Etiquetas HTML con estilo","Organización por secciones"]},
+      {t:"HTML en Aules:|incrusta tus creaciones", e:"🧩", url:"",
+       d:"Lleva a Aules los juegos y apps que has creado: archivos HTML, páginas y recursos incrustados paso a paso.",
+       pts:["Subir un archivo HTML","Mostrar en página o incrustado","Solución de problemas frecuentes"]},
+      {t:"SCORM sin miedo:|actividades que califican solas", e:"📦", url:"",
+       d:"Empaqueta tus recursos como SCORM para que Aules registre la nota y el progreso de cada alumno automáticamente.",
+       pts:["Qué es un paquete SCORM","Crear el paquete con IA","Configurar calificación en Aules"]},
+      {t:"GIFT + IA:|100 preguntas en 1 minuto", e:"💯", url:"",
+       d:"Genera bancos de preguntas en formato GIFT con IA e impórtalos en Aules para crear cuestionarios en segundos.",
+       pts:["Sintaxis GIFT explicada","Prompt para generar preguntas","Importar al banco de preguntas"]},
+      {t:"Actividades|interactivas que enganchan", e:"🎯", url:"",
+       d:"H5P, lecciones, glosarios y foros potenciados con IA para un aula virtual dinámica y participativa.",
+       pts:["H5P: vídeo interactivo y más","Lecciones con ramificaciones","Foros y glosarios colaborativos"]},
+      {t:"Evaluar mejor|en menos tiempo", e:"⏱️", url:"",
+       d:"Rúbricas, retroalimentación personalizada y seguimiento del progreso con IA y las herramientas de Aules.",
+       pts:["Rúbricas generadas con IA","Feedback rápido y personalizado","Informes y seguimiento del alumnado"]}
+    ]}
+];
+
+/* ---------- Enlaces guardados en LocalStorage ---------- */
+const LS_KEY = "edocentia-video-links";
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(LS_KEY) || "{}"); } catch(e){ saved = {}; }
+
+// Inicializar con los links del código si no están en saved
+MODULES.forEach(m => {
+  m.videos.forEach((v, idx) => {
+    const k = m.id + "-" + (idx + 1);
+    if (!saved[k] && v.url) {
+      saved[k] = v.url;
+    }
+  });
+});
+
+const urlOf = (m,i) => saved[m.id+"-"+(i+1)] || m.videos[i].url || "";
+function saveLink(key,val,mi,idx){
+  saved[key]=val;
+  if(mi!==undefined && idx!==undefined){
+    MODULES[mi].videos[idx].url = val;
+  }
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(saved)); }catch(e){}
+}
+
+/* ---------- Patrones visuales de portadas ---------- */
+function patternCSS(p){
+  switch(p){
+    case "dots":    return "radial-gradient(rgba(255,255,255,.5) 1.5px, transparent 1.6px) 0 0/18px 18px";
+    case "stripes": return "repeating-linear-gradient(135deg, rgba(255,255,255,.25) 0 2px, transparent 2px 16px)";
+    case "grid":    return "linear-gradient(rgba(255,255,255,.25) 1px, transparent 1px) 0 0/22px 22px, linear-gradient(90deg, rgba(255,255,255,.25) 1px, transparent 1px) 0 0/22px 22px";
+    case "waves":   return "radial-gradient(circle at 0 100%, transparent 14px, rgba(255,255,255,.3) 15px, transparent 16px) 0 0/30px 30px";
+  }
+  return "none";
+}
+const ANGLES=[120,145,160,200,225,100];
+
+function coverHTML(m,i){
+  const v=m.videos[i];
+  const [a,b]=v.t.split("|");
+  const ang=ANGLES[i%ANGLES.length];
+  const bg=`linear-gradient(${ang}deg, ${i%2?m.c2:m.c1} 0%, ${i%2?m.c1:m.c2} 100%)`;
+  return `<div class="cover" style="background:${bg};--hl:${m.hl}">
+    <div class="pat" style="background:${patternCSS(m.pat)}"></div>
+    <div class="c-num">${i+1}</div>
+    <div class="c-emoji">${v.e}</div>
+    <div class="c-tag">M${m.n} · EP ${i+1}</div>
+    <div class="logo-mini">EV</div>
+    <div class="c-title">${a}<em>${b||""}</em></div>
+  </div>`;
+}
+const plain = v => v.t.replace("|"," ");
+
+/* ---------- HERO ---------- */
+function renderHero(){
+  const m=MODULES[0], i=0, v=m.videos[0], u=urlOf(m,0);
+  document.getElementById("hero").innerHTML = `
+    <div class="hero-bg">${coverHTML(m,i)}</div>
+    <div class="hero-content">
+      <div class="badge"><b>EV</b> S E R I E · C U R S O &nbsp;I A</div>
+      <h1>Inteligencia artificial<br>para docentes</h1>
+      <p>4 temporadas, 24 episodios y un objetivo: que crees materiales, juegos y apps para tus clases y los integres en Aules. Empieza por el episodio 1: <strong>${plain(v)}</strong>.</p>
+      <div class="btns">
+        <a class="btn btn-play ${u?"":"disabled"}" href="${u||"#"}" target="_blank" rel="noopener">▶ Reproducir</a>
+        <button class="btn btn-info" onclick="openModal(0,0)">ⓘ Más información</button>
+      </div>
+    </div>`;
+}
+
+/* ---------- FILAS ---------- */
+function renderRows(filter=""){
+  const f=filter.trim().toLowerCase();
+  let html="", total=0;
+  MODULES.forEach((m,mi)=>{
+    const cards = m.videos.map((v,i)=>({v,i})).filter(({v})=>!f || (plain(v)+" "+v.d).toLowerCase().includes(f));
+    if(!cards.length) return;
+    total+=cards.length;
+    html += `<section class="row" id="${m.id}">
+      <div class="row-head">
+        <span class="mod" style="background:linear-gradient(90deg,${m.c1},${m.c2})">TEMPORADA ${m.n}</span>
+        <h2>${m.name}</h2>
+        <small>${m.desc}</small>
+      </div>
+      <div class="track-wrap">
+        <button class="arrow l" onclick="scrollRow(this,-1)">‹</button>
+        <div class="track">
+          ${cards.map(({v,i})=>{
+            const u=urlOf(m,i);
+            return `<div class="card" onclick="openModal(${mi},${i})">
+              ${u?'<span class="rank">▶ YA DISPONIBLE</span>':""}
+              ${coverHTML(m,i)}
+              <div class="meta"><span>Episodio ${i+1}</span><span class="state ${u?"on":"off"}">${u?"● Disponible":"Próximamente"}</span></div>
+            </div>`}).join("")}
+        </div>
+        <button class="arrow r" onclick="scrollRow(this,1)">›</button>
+      </div>
+    </section>`;
+  });
+  document.getElementById("rows").innerHTML = total ? html : `<p class="empty">No hay vídeos que coincidan con “${filter}”.</p>`;
+}
+function scrollRow(btn,dir){
+  const t=btn.parentElement.querySelector(".track");
+  t.scrollBy({left:dir*t.clientWidth*0.85,behavior:"smooth"});
+}
+
+/* ---------- MODAL EPISODIO ---------- */
+const modal=document.getElementById("modal");
+function openModal(mi,i){
+  const m=MODULES[mi], v=m.videos[i], u=urlOf(m,i), key=m.id+"-"+(i+1);
+  document.getElementById("sheet").innerHTML = `
+    <div class="sheet-top">${coverHTML(m,i)}<button class="close" onclick="closeModal()">✕</button></div>
+    <div class="sheet-body">
+      <div class="btns">
+        <a class="btn btn-play ${u?"":"disabled"}" href="${u||"#"}" target="_blank" rel="noopener">▶ ${u?"Ver en YouTube":"Próximamente"}</a>
+      </div>
+      <h3>${plain(v)}</h3>
+      <div class="sub">Temporada ${m.n} · Episodio ${i+1} · ${m.name}</div>
+      <p>${v.d}</p>
+      <ul>${v.pts.map(p=>`<li>${p}</li>`).join("")}</ul>
+      <div class="edit">
+        <label>Enlace del vídeo (YouTube u otra plataforma):</label>
+        <div class="f">
+          <input id="urlIn" type="url" placeholder="https://youtu.be/..." value="${u}">
+          <button onclick="setLink('${key}',${mi},${i})">Guardar enlace</button>
+        </div>
+        <div class="edit-subactions">
+          <button class="btn-download-html" onclick="downloadCurrentHtml()">💾 Descargar index.html actualizado</button>
+        </div>
+      </div>
+    </div>`;
+  modal.classList.add("open");
+  document.body.style.overflow="hidden";
+}
+function closeModal(){ modal.classList.remove("open"); document.body.style.overflow=""; }
+modal.addEventListener("click",e=>{ if(e.target===modal) closeModal(); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeModal(); closeManagerModal(); } });
+
+function setLink(key,mi,i){
+  const val=document.getElementById("urlIn").value.trim();
+  saveLink(key,val,mi,i);
+  renderRows(document.getElementById("q").value);
+  if(mi===0&&i===0) renderHero();
+  openModal(mi,i);
+  toast(val ? "Enlace guardado. ¡Pulsa 'Descargar index.html' para fijarlo!" : "Enlace eliminado");
+}
+
+/* ---------- GESTOR GENERAL DE ENLACES ---------- */
+const manageModal = document.getElementById("manageModal");
+function openManagerModal(){
+  renderManagerGrid();
+  manageModal.classList.add("open");
+  document.body.style.overflow="hidden";
+}
+function closeManagerModal(){
+  manageModal.classList.remove("open");
+  document.body.style.overflow="";
+}
+manageModal.addEventListener("click",e=>{ if(e.target===manageModal) closeManagerModal(); });
+
+function renderManagerGrid(){
+  const container = document.getElementById("manageGrid");
+  let html = "";
+  MODULES.forEach((m, mi) => {
+    html += `<div class="m-group">
+      <div class="m-group-header">
+        <span>TEMPORADA ${m.n}: ${m.name}</span>
+        <small style="color:var(--muted)">${m.videos.length} episodios</small>
+      </div>`;
+    m.videos.forEach((v, i) => {
+      const u = urlOf(m, i);
+      const key = `${m.id}-${i+1}`;
+      html += `<div class="m-ep-row">
+        <span class="tag">T${m.n}E${i+1}</span>
+        <span class="title">${plain(v)}</span>
+        <input type="url" id="inp_${key}" data-key="${key}" data-mi="${mi}" data-idx="${i}" placeholder="https://youtu.be/..." value="${u}">
+        <span class="badge-status ${u?'ready':'empty'}">${u?'● LISTO':'○ VACÍO'}</span>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  container.innerHTML = html;
+}
+
+function saveAllFromManager(andDownload = false){
+  const inputs = document.querySelectorAll("#manageGrid input[data-key]");
+  inputs.forEach(inp => {
+    const key = inp.dataset.key;
+    const mi = parseInt(inp.dataset.mi, 10);
+    const idx = parseInt(inp.dataset.idx, 10);
+    const val = inp.value.trim();
+    saveLink(key, val, mi, idx);
+  });
+  renderRows(document.getElementById("q").value);
+  renderHero();
+  renderManagerGrid();
+  toast("¡Todos los enlaces han sido guardados!");
+  if(andDownload){
+    downloadCurrentHtml();
+  }
+}
+
+function populateBulkFromCurrent(){
+  const lines = ["# LISTA DE VÍDEOS DE EDOCENTIA EN VÍDEO"];
+  MODULES.forEach((m) => {
+    lines.push(`\nTEMPORADA ${m.n}: ${m.name}`);
+    m.videos.forEach((v, i) => {
+      lines.push(`T${m.n}E${i+1} - ${plain(v)} = ${urlOf(m, i)}`);
+    });
+  });
+  document.getElementById("bulkInput").value = lines.join("\n");
+  toast("Lista actual cargada en el recuadro");
+}
+
+function processBulkLinks(){
+  const text = document.getElementById("bulkInput").value;
+  if(!text.trim()){
+    toast("Pega primero el texto con los enlaces");
+    return;
+  }
+  const lines = text.split(/\r?\n/);
+  let count = 0;
+
+  lines.forEach(line => {
+    const trimmed = line.trim();
+    if(!trimmed || trimmed.startsWith("#")) return;
+
+    // Patrón T1E1 o M1E1 o similar
+    const match = trimmed.match(/T(\d+)\s*E(\d+)[\s\S]*?=\s*(https?:\/\/[^\s]+)/i);
+    if(match){
+      const season = parseInt(match[1], 10);
+      const ep = parseInt(match[2], 10);
+      const url = match[3].trim();
+      if(season >= 1 && season <= MODULES.length){
+        const mi = season - 1;
+        if(ep >= 1 && ep <= MODULES[mi].videos.length){
+          const key = `m${season}-${ep}`;
+          saveLink(key, url, mi, ep - 1);
+          count++;
+        }
+      }
+    } else {
+      // Buscar cualquier URL con número de episodio
+      const epMatch = trimmed.match(/(\d+)[\s\S]*?(https?:\/\/[^\s]+)/);
+      if(epMatch && !trimmed.toLowerCase().includes("temporada")){
+        const num = parseInt(epMatch[1], 10);
+        const url = epMatch[2].trim();
+        if(num >= 1 && num <= 24){
+          let currentTotal = 0;
+          for(let mi = 0; mi < MODULES.length; mi++){
+            if(num <= currentTotal + MODULES[mi].videos.length){
+              const idx = num - currentTotal - 1;
+              const key = `m${mi+1}-${idx+1}`;
+              saveLink(key, url, mi, idx);
+              count++;
+              break;
+            }
+            currentTotal += MODULES[mi].videos.length;
+          }
+        }
+      }
+    }
+  });
+
+  renderRows(document.getElementById("q").value);
+  renderHero();
+  renderManagerGrid();
+  toast(`¡Se han importado y aplicado ${count} enlaces!`);
+}
+
+/* ---------- GENERAR Y DESCARGAR INDEX.HTML ACTUALIZADO ---------- */
+function generateUpdatedHtml(){
+  // Clona el documento actual y reemplaza el bloque MODULES con los links actuales
+  const updatedModules = JSON.parse(JSON.stringify(MODULES));
+  updatedModules.forEach(m => {
+    m.videos.forEach((v, i) => {
+      v.url = urlOf(m, i);
+    });
+  });
+
+  let fullHtml = document.documentElement.outerHTML;
+  // Regex para sustituir la definición de const MODULES = [...];
+  const modulesJson = JSON.stringify(updatedModules, null, 2);
+  const regex = /const MODULES = \[\s*\{[\s\S]*?\n\];/;
+  
+  if(regex.test(fullHtml)){
+    fullHtml = "<!DOCTYPE html>\n<html lang=\"es\">\n" + fullHtml.replace(regex, `const MODULES = ${modulesJson};`) + "\n</html>";
+  } else {
+    // Si no coincide exactamente el regex, descarga el código actual
+    fullHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+  }
+  return fullHtml;
+}
+
+function downloadCurrentHtml(){
+  const content = generateUpdatedHtml();
+  const blob = new Blob([content], { type: "text/html;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "index.html";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+  toast("📥 ¡Archivo index.html descargado con todos los nuevos links!");
+}
+
+/* ---------- UTILIDADES ---------- */
+function toast(msg){
+  const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),2600);
+}
+
+document.getElementById("copyLinks").addEventListener("click",async()=>{
+  const lines=[];
+  MODULES.forEach(m=>m.videos.forEach((v,i)=>lines.push(`T${m.n}E${i+1} · ${plain(v)}: ${urlOf(m,i)||"(sin enlace)"}`)));
+  try{ await navigator.clipboard.writeText(lines.join("\n")); toast("Lista de enlaces copiada"); }
+  catch(e){ toast("No se pudo copiar"); }
+});
+
+document.getElementById("q").addEventListener("input",e=>renderRows(e.target.value));
+window.addEventListener("scroll",()=>document.getElementById("nav").classList.toggle("solid",scrollY>60));
+
+renderHero();
+renderRows();
+</script>
+</body>
+</html>
