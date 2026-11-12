@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
-<html lang="es"><head>
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Edocentia en vídeo · IA para docentes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#0b0b0f; --panel:#16161d; --text:#f4f4f6; --muted:#a3a3b2; --accent:#ff3d4a; --accent-hover:#ff5763;
-    --green:#46d369;
+    --green:#46d369; --blue:#3a86ff;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
@@ -30,6 +30,8 @@
   .search input{background:none;border:none;outline:none;color:#fff;font-size:14px;width:170px}
   .btn-nav-manage{background:#22222e;color:#fff;border:1px solid #444;border-radius:4px;padding:6px 12px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;transition:all .2s}
   .btn-nav-manage:hover{background:var(--accent);border-color:var(--accent)}
+  .admin-badge-nav{display:none;background:rgba(70,211,105,.2);color:#46d369;border:1px solid rgba(70,211,105,.4);padding:4px 8px;border-radius:4px;font-size:11px;font-weight:700}
+  .admin-badge-nav.active{display:inline-flex;align-items:center;gap:4px}
   @media(max-width:900px){.navlinks{display:none}.search input{width:110px}}
 
   /* HERO */
@@ -92,7 +94,7 @@
   .cover .logo-mini{position:absolute;top:9%;right:6%;z-index:3;font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:14px;color:var(--accent);letter-spacing:1px}
 
   /* MODAL */
-  .modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.8);display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:5vh 16px}
+  .modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.85);display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:5vh 16px}
   .modal.open{display:flex}
   .sheet{width:min(860px,100%);background:var(--panel);border-radius:10px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.8);animation:pop .25s ease;position:relative}
   @keyframes pop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
@@ -109,24 +111,37 @@
   .sheet-body .sub{color:var(--green);font-weight:700;font-size:14px;margin-bottom:14px}
   .sheet-body p{color:#d6d6de;line-height:1.6;margin-bottom:14px}
   .sheet-body ul{margin:0 0 18px 18px;color:#c9c9d3;line-height:1.7}
-  .edit{border-top:1px solid #2c2c36;padding-top:16px;margin-top:6px}
+
+  /* EDIT PANEL IN MODAL */
+  .edit{border-top:1px solid #2c2c36;padding-top:16px;margin-top:10px}
   .edit label{font-size:13px;color:var(--muted);display:block;margin-bottom:8px}
   .edit .f{display:flex;gap:8px;flex-wrap:wrap}
   .edit input{flex:1;min-width:220px;background:#0e0e13;border:1px solid #3a3a46;color:#fff;border-radius:4px;padding:10px 12px;font-size:14px}
   .edit button{background:#2b2b35;color:#fff;border:1px solid #444;border-radius:4px;padding:10px 14px;font-size:14px;font-weight:600}
   .edit button:hover{background:#383844}
-  .edit-subactions{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap}
-  .btn-download-html{background:var(--accent);color:#fff;border:none;padding:8px 14px;border-radius:4px;font-size:13px;font-weight:700}
-  .btn-download-html:hover{background:var(--accent-hover)}
+  .edit-subactions{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .btn-gh-push{background:var(--blue);color:#fff;border:none;padding:9px 15px;border-radius:4px;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+  .btn-gh-push:hover{background:#266ee0}
+  .btn-download-html{background:#2b2b35;color:#fff;border:1px solid #555;padding:9px 15px;border-radius:4px;font-size:13px;font-weight:600}
+  .btn-download-html:hover{background:#3a3a46}
+  .lock-hint{font-size:12px;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:4px;margin-top:12px;text-decoration:underline}
 
   /* GESTOR GENERAL DE ENLACES MODAL */
-  .manage-sheet{width:min(940px,96vw);background:var(--panel);border-radius:12px;padding:26px;color:#fff;max-height:90vh;overflow-y:auto;box-shadow:0 30px 90px rgba(0,0,0,.9);position:relative}
+  .manage-sheet{width:min(960px,96vw);background:var(--panel);border-radius:12px;padding:26px;color:#fff;max-height:92vh;overflow-y:auto;box-shadow:0 30px 90px rgba(0,0,0,.9);position:relative}
   .manage-sheet h2{font-size:24px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
-  .manage-sheet p.intro{color:var(--muted);font-size:14px;margin-bottom:20px;line-height:1.5}
+  .manage-sheet p.intro{color:var(--muted);font-size:14px;margin-bottom:18px;line-height:1.5}
+  
+  .gh-box{background:#0e131d;border:1px solid #203354;border-radius:8px;padding:14px 18px;margin-bottom:20px;display:flex;flex-direction:column;gap:10px}
+  .gh-box h4{font-size:14px;color:#70a7ff;display:flex;align-items:center;gap:8px}
+  .gh-box p{font-size:12px;color:#a8c4f0;line-height:1.4}
+  .gh-box .gh-inputs{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .gh-box input{flex:1;min-width:240px;background:#060a12;border:1px solid #26436f;color:#fff;padding:8px 12px;border-radius:4px;font-size:13px}
+
   .bulk-box{background:#111116;border:1px solid #2f2f3d;border-radius:8px;padding:16px;margin-bottom:24px}
   .bulk-box h4{font-size:15px;margin-bottom:6px;color:#e8e8ee}
   .bulk-box textarea{width:100%;height:100px;background:#09090c;border:1px solid #3a3a48;border-radius:4px;color:#fff;padding:10px;font-family:monospace;font-size:12px;resize:vertical;margin-bottom:10px}
   .bulk-box .btn-row{display:flex;gap:10px;flex-wrap:wrap}
+  
   .m-group{margin-bottom:24px;border:1px solid #272733;border-radius:8px;overflow:hidden}
   .m-group-header{background:#1a1a24;padding:10px 16px;font-weight:700;font-size:15px;display:flex;justify-content:space-between;align-items:center}
   .m-ep-row{display:flex;align-items:center;gap:12px;padding:10px 16px;border-top:1px solid #20202c;font-size:13px}
@@ -139,8 +154,16 @@
   .badge-status.empty{background:rgba(255,255,255,.1);color:#888}
   .manage-footer{position:sticky;bottom:-26px;background:var(--panel);padding:16px 0 0;margin-top:20px;border-top:1px solid #2e2e3c;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
 
+  /* AUTH MODAL */
+  .auth-card{background:var(--panel);border:1px solid #333;width:min(420px,94vw);border-radius:12px;padding:28px 24px;box-shadow:0 30px 80px rgba(0,0,0,.9);text-align:center;position:relative}
+  .auth-card h3{font-size:20px;margin-bottom:8px}
+  .auth-card p{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+  .auth-card input{width:100%;background:#09090c;border:1px solid #444;color:#fff;padding:12px 14px;border-radius:6px;font-size:16px;text-align:center;letter-spacing:4px;margin-bottom:16px}
+  .auth-card .btns-auth{display:flex;gap:10px}
+  .auth-card .btns-auth button{flex:1;padding:12px;border-radius:6px;font-weight:700;font-size:14px}
+
   /* TOAST */
-  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);background:#fff;color:#000;padding:12px 22px;border-radius:6px;font-weight:700;z-index:200;transition:transform .3s;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);background:#fff;color:#000;padding:12px 22px;border-radius:6px;font-weight:700;z-index:200;transition:transform .3s;box-shadow:0 8px 30px rgba(0,0,0,.5);max-width:90vw;text-align:center}
   .toast.show{transform:translateX(-50%) translateY(0)}
 
   /* FOOTER */
@@ -157,13 +180,15 @@
   .f-btn:hover{background:#262636;color:#fff;border-color:#555}
   .f-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
   .f-btn.primary:hover{background:var(--accent-hover)}
+  .f-btn.blue{background:var(--blue);border-color:var(--blue);color:#fff}
+  .f-btn.blue:hover{background:#266ee0}
 
   .empty{padding:0 4vw;color:var(--muted)}
 </style>
 </head>
-<body style="overflow: hidden;">
+<body>
 
-<nav id="nav" class="solid">
+<nav id="nav">
   <div class="logo">EDOCENTIA <span>EN VÍDEO</span></div>
   <div class="navlinks">
     <a href="#m1">Fundamentos</a>
@@ -173,345 +198,13 @@
   </div>
   <div class="nav-right">
     <label class="search">🔍<input id="q" type="search" placeholder="Buscar vídeos…"></label>
-    <button id="openManagerNav" class="btn-nav-manage" onclick="openManagerModal()">⚙️ Gestionar enlaces</button>
+    <div id="adminBadge" class="admin-badge-nav">🔓 Admin activo</div>
+    <button id="openManagerNav" class="btn-nav-manage" onclick="handleManagerClick()">⚙️ Gestionar enlaces</button>
   </div>
 </nav>
 
-<header class="hero" id="hero">
-    <div class="hero-bg"><div class="cover" style="background:linear-gradient(120deg, #3a0ca3 0%, #7209b7 100%);--hl:#ffd166">
-    <div class="pat" style="background:radial-gradient(rgba(255,255,255,.5) 1.5px, transparent 1.6px) 0 0/18px 18px"></div>
-    <div class="c-num">1</div>
-    <div class="c-emoji">🧠</div>
-    <div class="c-tag">M1 · EP 1</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">IA en el aula:<em>lo que nadie te ha contado</em></div>
-  </div></div>
-    <div class="hero-content">
-      <div class="badge"><b>EV</b> S E R I E · C U R S O &nbsp;I A</div>
-      <h1>Inteligencia artificial<br>para docentes</h1>
-      <p>4 temporadas, 24 episodios y un objetivo: que crees materiales, juegos y apps para tus clases y los integres en Aules. Empieza por el episodio 1: <strong>IA en el aula: lo que nadie te ha contado</strong>.</p>
-      <div class="btns">
-        <a class="btn btn-play " href="https://youtu.be/Gcpd-rXg8Bk" target="_blank" rel="noopener">▶ Reproducir</a>
-        <button class="btn btn-info" onclick="openModal(0,0)">ⓘ Más información</button>
-      </div>
-    </div></header>
-<main id="rows"><section class="row" id="m1">
-      <div class="row-head">
-        <span class="mod" style="background:linear-gradient(90deg,#3a0ca3,#7209b7)">TEMPORADA 1</span>
-        <h2>Fundamentos de IA y uso responsable</h2>
-        <small>Introducción a la IA en educación, principales herramientas, privacidad, protección de datos y uso ético y seguro.</small>
-      </div>
-      <div class="track-wrap">
-        <button class="arrow l" onclick="scrollRow(this,-1)">‹</button>
-        <div class="track">
-          <div class="card" onclick="openModal(0,0)">
-              <span class="rank">▶ YA DISPONIBLE</span>
-              <div class="cover" style="background:linear-gradient(120deg, #3a0ca3 0%, #7209b7 100%);--hl:#ffd166">
-    <div class="pat" style="background:radial-gradient(rgba(255,255,255,.5) 1.5px, transparent 1.6px) 0 0/18px 18px"></div>
-    <div class="c-num">1</div>
-    <div class="c-emoji">🧠</div>
-    <div class="c-tag">M1 · EP 1</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">IA en el aula:<em>lo que nadie te ha contado</em></div>
-  </div>
-              <div class="meta"><span>Episodio 1</span><span class="state on">● Disponible</span></div>
-            </div><div class="card" onclick="openModal(0,1)">
-              
-              <div class="cover" style="background:linear-gradient(145deg, #7209b7 0%, #3a0ca3 100%);--hl:#ffd166">
-    <div class="pat" style="background:radial-gradient(rgba(255,255,255,.5) 1.5px, transparent 1.6px) 0 0/18px 18px"></div>
-    <div class="c-num">2</div>
-    <div class="c-emoji">🗺️</div>
-    <div class="c-tag">M1 · EP 2</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">El mapa de la IA:<em>qué herramienta usar y cuándo</em></div>
-  </div>
-              <div class="meta"><span>Episodio 2</span><span class="state off">Próximamente</span></div>
-            </div><div class="card" onclick="openModal(0,2)">
-              
-              <div class="cover" style="background:linear-gradient(160deg, #3a0ca3 0%, #7209b7 100%);--hl:#ffd166">
-    <div class="pat" style="background:radial-gradient(rgba(255,255,255,.5) 1.5px, transparent 1.6px) 0 0/18px 18px"></div>
-    <div class="c-num">3</div>
-    <div class="c-emoji">✍️</div>
-    <div class="c-tag">M1 · EP 3</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">El arte del prompt:<em>pide y se te dará</em></div>
-  </div>
-              <div class="meta"><span>Episodio 3</span><span class="state off">Próximamente</span></div>
-            </div><div class="card" onclick="openModal(0,3)">
-              
-              <div class="cover" style="background:linear-gradient(200deg, #7209b7 0%, #3a0ca3 100%);--hl:#ffd166">
-    <div class="pat" style="background:radial-gradient(rgba(255,255,255,.5) 1.5px, transparent 1.6px) 0 0/18px 18px"></div>
-    <div class="c-num">4</div>
-    <div class="c-emoji">🔒</div>
-    <div class="c-tag">M1 · EP 4</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">Tus datos, a salvo:<em>privacidad y RGPD</em></div>
-  </div>
-              <div class="meta"><span>Episodio 4</span><span class="state off">Próximamente</span></div>
-            </div><div class="card" onclick="openModal(0,4)">
-              
-              <div class="cover" style="background:linear-gradient(225deg, #3a0ca3 0%, #7209b7 100%);--hl:#ffd166">
-    <div class="pat" style="background:radial-gradient(rgba(255,255,255,.5) 1.5px, transparent 1.6px) 0 0/18px 18px"></div>
-    <div class="c-num">5</div>
-    <div class="c-emoji">🕵️</div>
-    <div class="c-tag">M1 · EP 5</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">Alucinaciones y sesgos:<em>cuando la IA miente</em></div>
-  </div>
-              <div class="meta"><span>Episodio 5</span><span class="state off">Próximamente</span></div>
-            </div><div class="card" onclick="openModal(0,5)">
-              <span class="rank">▶ YA DISPONIBLE</span>
-              <div class="cover" style="background:linear-gradient(100deg, #7209b7 0%, #3a0ca3 100%);--hl:#ffd166">
-    <div class="pat" style="background:radial-gradient(rgba(255,255,255,.5) 1.5px, transparent 1.6px) 0 0/18px 18px"></div>
-    <div class="c-num">6</div>
-    <div class="c-emoji">⚖️</div>
-    <div class="c-tag">M1 · EP 6</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">Reglas del juego:<em>ética de la IA en clase</em></div>
-  </div>
-              <div class="meta"><span>Episodio 6</span><span class="state on">● Disponible</span></div>
-            </div>
-        </div>
-        <button class="arrow r" onclick="scrollRow(this,1)">›</button>
-      </div>
-    </section><section class="row" id="m2">
-      <div class="row-head">
-        <span class="mod" style="background:linear-gradient(90deg,#f72585,#ff8c42)">TEMPORADA 2</span>
-        <h2>Herramientas de IA para crear materiales</h2>
-        <small>Presentaciones, imágenes y materiales educativos más visuales y atractivos con Copilot, Gemini, Canva, Gamma y NotebookLM.</small>
-      </div>
-      <div class="track-wrap">
-        <button class="arrow l" onclick="scrollRow(this,-1)">‹</button>
-        <div class="track">
-          <div class="card" onclick="openModal(1,0)">
-              
-              <div class="cover" style="background:linear-gradient(120deg, #f72585 0%, #ff8c42 100%);--hl:#fff3b0">
-    <div class="pat" style="background:repeating-linear-gradient(135deg, rgba(255,255,255,.25) 0 2px, transparent 2px 16px)"></div>
-    <div class="c-num">1</div>
-    <div class="c-emoji">⚡</div>
-    <div class="c-tag">M2 · EP 1</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">Presentaciones en<em>5 minutos con Gamma</em></div>
-  </div>
-              <div class="meta"><span>Episodio 1</span><span class="state off">Próximamente</span></div>
-            </div><div class="card" onclick="openModal(1,1)">
-              
-              <div class="cover" style="background:linear-gradient(145deg, #ff8c42 0%, #f72585 100%);--hl:#fff3b0">
-    <div class="pat" style="background:repeating-linear-gradient(135deg, rgba(255,255,255,.25) 0 2px, transparent 2px 16px)"></div>
-    <div class="c-num">2</div>
-    <div class="c-emoji">🤖</div>
-    <div class="c-tag">M2 · EP 2</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">Copilot:<em>tu ayudante en Microsoft 365</em></div>
-  </div>
-              <div class="meta"><span>Episodio 2</span><span class="state off">Próximamente</span></div>
-            </div><div class="card" onclick="openModal(1,2)">
-              
-              <div class="cover" style="background:linear-gradient(160deg, #f72585 0%, #ff8c42 100%);--hl:#fff3b0">
-    <div class="pat" style="background:repeating-linear-gradient(135deg, rgba(255,255,255,.25) 0 2px, transparent 2px 16px)"></div>
-    <div class="c-num">3</div>
-    <div class="c-emoji">✨</div>
-    <div class="c-tag">M2 · EP 3</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">Gemini:<em>de la idea al material</em></div>
-  </div>
-              <div class="meta"><span>Episodio 3</span><span class="state off">Próximamente</span></div>
-            </div><div class="card" onclick="openModal(1,3)">
-              
-              <div class="cover" style="background:linear-gradient(200deg, #ff8c42 0%, #f72585 100%);--hl:#fff3b0">
-    <div class="pat" style="background:repeating-linear-gradient(135deg, rgba(255,255,255,.25) 0 2px, transparent 2px 16px)"></div>
-    <div class="c-num">4</div>
-    <div class="c-emoji">🎨</div>
-    <div class="c-tag">M2 · EP 4</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">Canva Magic Studio:<em>diseña sin ser diseñador</em></div>
-  </div>
-              <div class="meta"><span>Episodio 4</span><span class="state off">Próximamente</span></div>
-            </div><div class="card" onclick="openModal(1,4)">
-              
-              <div class="cover" style="background:linear-gradient(225deg, #f72585 0%, #ff8c42 100%);--hl:#fff3b0">
-    <div class="pat" style="background:repeating-linear-gradient(135deg, rgba(255,255,255,.25) 0 2px, transparent 2px 16px)"></div>
-    <div class="c-num">5</div>
-    <div class="c-emoji">🖼️</div>
-    <div class="c-tag">M2 · EP 5</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">Imágenes con IA<em>que enamoran</em></div>
-  </div>
-              <div class="meta"><span>Episodio 5</span><span class="state off">Próximamente</span></div>
-            </div><div class="card" onclick="openModal(1,5)">
-              
-              <div class="cover" style="background:linear-gradient(100deg, #ff8c42 0%, #f72585 100%);--hl:#fff3b0">
-    <div class="pat" style="background:repeating-linear-gradient(135deg, rgba(255,255,255,.25) 0 2px, transparent 2px 16px)"></div>
-    <div class="c-num">6</div>
-    <div class="c-emoji">🎧</div>
-    <div class="c-tag">M2 · EP 6</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">NotebookLM:<em>tus apuntes hechos podcast</em></div>
-  </div>
-              <div class="meta"><span>Episodio 6</span><span class="state off">Próximamente</span></div>
-            </div>
-        </div>
-        <button class="arrow r" onclick="scrollRow(this,1)">›</button>
-      </div>
-    </section><section class="row" id="m3">
-      <div class="row-head">
-        <span class="mod" style="background:linear-gradient(90deg,#06d6a0,#118ab2)">TEMPORADA 3</span>
-        <h2>Recursos interactivos con vibe coding</h2>
-        <small>Juegos, cuestionarios, simuladores y pequeñas apps educativas creadas con IA, sin necesidad de saber programar.</small>
-      </div>
-      <div class="track-wrap">
-        <button class="arrow l" onclick="scrollRow(this,-1)">‹</button>
-        <div class="track">
-          <div class="card" onclick="openModal(2,0)">
-              
-              <div class="cover" style="background:linear-gradient(120deg, #06d6a0 0%, #118ab2 100%);--hl:#ffe66d">
-    <div class="pat" style="background:linear-gradient(rgba(255,255,255,.25) 1px, transparent 1px) 0 0/22px 22px, linear-gradient(90deg, rgba(255,255,255,.25) 1px, transparent 1px) 0 0/22px 22px"></div>
-    <div class="c-num">1</div>
-    <div class="c-emoji">🪄</div>
-    <div class="c-tag">M3 · EP 1</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">Vibe coding:<em>programa sin saber programar</em></div>
-  </div>
-              <div class="meta"><span>Episodio 1</span><span class="state off">Próximamente</span></div>
-            </div><div class="card" onclick="openModal(2,1)">
-              
-              <div class="cover" style="background:linear-gradient(145deg, #118ab2 0%, #06d6a0 100%);--hl:#ffe66d">
-    <div class="pat" style="background:linear-gradient(rgba(255,255,255,.25) 1px, transparent 1px) 0 0/22px 22px, linear-gradient(90deg, rgba(255,255,255,.25) 1px, transparent 1px) 0 0/22px 22px"></div>
-    <div class="c-num">2</div>
-    <div class="c-emoji">🎮</div>
-    <div class="c-tag">M3 · EP 2</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">Tu primer juego<em>educativo en 10 minutos</em></div>
-  </div>
-              <div class="meta"><span>Episodio 2</span><span class="state off">Próximamente</span></div>
-            </div><div class="card" onclick="openModal(2,2)">
-              
-              <div class="cover" style="background:linear-gradient(160deg, #06d6a0 0%, #118ab2 100%);--hl:#ffe66d">
-    <div class="pat" style="background:linear-gradient(rgba(255,255,255,.25) 1px, transparent 1px) 0 0/22px 22px, linear-gradient(90deg, rgba(255,255,255,.25) 1px, transparent 1px) 0 0/22px 22px"></div>
-    <div class="c-num">3</div>
-    <div class="c-emoji">❓</div>
-    <div class="c-tag">M3 · EP 3</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">Quizzes que<em>enganchan</em></div>
-  </div>
-              <div class="meta"><span>Episodio 3</span><span class="state off">Próximamente</span></div>
-            </div><div class="card" onclick="openModal(2,3)">
-              
-              <div class="cover" style="background:linear-gradient(200deg, #118ab2 0%, #06d6a0 100%);--hl:#ffe66d">
-    <div class="pat" style="background:linear-gradient(rgba(255,255,255,.25) 1px, transparent 1px) 0 0/22px 22px, linear-gradient(90deg, rgba(255,255,255,.25) 1px, transparent 1px) 0 0/22px 22px"></div>
-    <div class="c-num">4</div>
-    <div class="c-emoji">🧪</div>
-    <div class="c-tag">M3 · EP 4</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">Simuladores:<em>la ciencia que se toca</em></div>
-  </div>
-              <div class="meta"><span>Episodio 4</span><span class="state off">Próximamente</span></div>
-            </div><div class="card" onclick="openModal(2,4)">
-              
-              <div class="cover" style="background:linear-gradient(225deg, #06d6a0 0%, #118ab2 100%);--hl:#ffe66d">
-    <div class="pat" style="background:linear-gradient(rgba(255,255,255,.25) 1px, transparent 1px) 0 0/22px 22px, linear-gradient(90deg, rgba(255,255,255,.25) 1px, transparent 1px) 0 0/22px 22px"></div>
-    <div class="c-num">5</div>
-    <div class="c-emoji">🗝️</div>
-    <div class="c-tag">M3 · EP 5</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">Escape room<em>digital para tu aula</em></div>
-  </div>
-              <div class="meta"><span>Episodio 5</span><span class="state off">Próximamente</span></div>
-            </div><div class="card" onclick="openModal(2,5)">
-              
-              <div class="cover" style="background:linear-gradient(100deg, #118ab2 0%, #06d6a0 100%);--hl:#ffe66d">
-    <div class="pat" style="background:linear-gradient(rgba(255,255,255,.25) 1px, transparent 1px) 0 0/22px 22px, linear-gradient(90deg, rgba(255,255,255,.25) 1px, transparent 1px) 0 0/22px 22px"></div>
-    <div class="c-num">6</div>
-    <div class="c-emoji">🚀</div>
-    <div class="c-tag">M3 · EP 6</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">Pule y publica<em>tu app educativa</em></div>
-  </div>
-              <div class="meta"><span>Episodio 6</span><span class="state off">Próximamente</span></div>
-            </div>
-        </div>
-        <button class="arrow r" onclick="scrollRow(this,1)">›</button>
-      </div>
-    </section><section class="row" id="m4">
-      <div class="row-head">
-        <span class="mod" style="background:linear-gradient(90deg,#ef233c,#5a189a)">TEMPORADA 4</span>
-        <h2>Inteligencia artificial y Aules</h2>
-        <small>Integración de recursos en Aules mediante HTML, SCORM, GIFT y otros formatos. Personalización del aula, actividades interactivas y evaluación.</small>
-      </div>
-      <div class="track-wrap">
-        <button class="arrow l" onclick="scrollRow(this,-1)">‹</button>
-        <div class="track">
-          <div class="card" onclick="openModal(3,0)">
-              
-              <div class="cover" style="background:linear-gradient(120deg, #ef233c 0%, #5a189a 100%);--hl:#8ecae6">
-    <div class="pat" style="background:radial-gradient(circle at 0 100%, transparent 14px, rgba(255,255,255,.3) 15px, transparent 16px) 0 0/30px 30px"></div>
-    <div class="c-num">1</div>
-    <div class="c-emoji">🏫</div>
-    <div class="c-tag">M4 · EP 1</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">Aules a tu medida:<em>un aula que inspira</em></div>
-  </div>
-              <div class="meta"><span>Episodio 1</span><span class="state off">Próximamente</span></div>
-            </div><div class="card" onclick="openModal(3,1)">
-              
-              <div class="cover" style="background:linear-gradient(145deg, #5a189a 0%, #ef233c 100%);--hl:#8ecae6">
-    <div class="pat" style="background:radial-gradient(circle at 0 100%, transparent 14px, rgba(255,255,255,.3) 15px, transparent 16px) 0 0/30px 30px"></div>
-    <div class="c-num">2</div>
-    <div class="c-emoji">🧩</div>
-    <div class="c-tag">M4 · EP 2</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">HTML en Aules:<em>incrusta tus creaciones</em></div>
-  </div>
-              <div class="meta"><span>Episodio 2</span><span class="state off">Próximamente</span></div>
-            </div><div class="card" onclick="openModal(3,2)">
-              
-              <div class="cover" style="background:linear-gradient(160deg, #ef233c 0%, #5a189a 100%);--hl:#8ecae6">
-    <div class="pat" style="background:radial-gradient(circle at 0 100%, transparent 14px, rgba(255,255,255,.3) 15px, transparent 16px) 0 0/30px 30px"></div>
-    <div class="c-num">3</div>
-    <div class="c-emoji">📦</div>
-    <div class="c-tag">M4 · EP 3</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">SCORM sin miedo:<em>actividades que califican solas</em></div>
-  </div>
-              <div class="meta"><span>Episodio 3</span><span class="state off">Próximamente</span></div>
-            </div><div class="card" onclick="openModal(3,3)">
-              
-              <div class="cover" style="background:linear-gradient(200deg, #5a189a 0%, #ef233c 100%);--hl:#8ecae6">
-    <div class="pat" style="background:radial-gradient(circle at 0 100%, transparent 14px, rgba(255,255,255,.3) 15px, transparent 16px) 0 0/30px 30px"></div>
-    <div class="c-num">4</div>
-    <div class="c-emoji">💯</div>
-    <div class="c-tag">M4 · EP 4</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">GIFT + IA:<em>100 preguntas en 1 minuto</em></div>
-  </div>
-              <div class="meta"><span>Episodio 4</span><span class="state off">Próximamente</span></div>
-            </div><div class="card" onclick="openModal(3,4)">
-              
-              <div class="cover" style="background:linear-gradient(225deg, #ef233c 0%, #5a189a 100%);--hl:#8ecae6">
-    <div class="pat" style="background:radial-gradient(circle at 0 100%, transparent 14px, rgba(255,255,255,.3) 15px, transparent 16px) 0 0/30px 30px"></div>
-    <div class="c-num">5</div>
-    <div class="c-emoji">🎯</div>
-    <div class="c-tag">M4 · EP 5</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">Actividades<em>interactivas que enganchan</em></div>
-  </div>
-              <div class="meta"><span>Episodio 5</span><span class="state off">Próximamente</span></div>
-            </div><div class="card" onclick="openModal(3,5)">
-              
-              <div class="cover" style="background:linear-gradient(100deg, #5a189a 0%, #ef233c 100%);--hl:#8ecae6">
-    <div class="pat" style="background:radial-gradient(circle at 0 100%, transparent 14px, rgba(255,255,255,.3) 15px, transparent 16px) 0 0/30px 30px"></div>
-    <div class="c-num">6</div>
-    <div class="c-emoji">⏱️</div>
-    <div class="c-tag">M4 · EP 6</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">Evaluar mejor<em>en menos tiempo</em></div>
-  </div>
-              <div class="meta"><span>Episodio 6</span><span class="state off">Próximamente</span></div>
-            </div>
-        </div>
-        <button class="arrow r" onclick="scrollRow(this,1)">›</button>
-      </div>
-    </section></main>
+<header class="hero" id="hero"></header>
+<main id="rows"></main>
 
 <footer>
   <div class="footer-wrap">
@@ -521,55 +214,54 @@
       <div class="footer-credit">✨ <strong>Materiales creados por Ana H. Iranzo</strong></div>
     </div>
     <div class="footer-tools">
-      <button class="f-btn primary" onclick="openManagerModal()">⚙️ Gestionar todos los enlaces</button>
+      <button class="f-btn primary" onclick="handleManagerClick()">⚙️ Gestionar todos los enlaces</button>
       <button id="copyLinks" class="f-btn">📋 Copiar todos los enlaces</button>
-      <button class="f-btn" onclick="downloadCurrentHtml()">💾 Descargar index.html actualizado</button>
+      <button class="f-btn blue" onclick="handleDownloadOrPush()">🚀 Sincronizar / Descargar</button>
     </div>
   </div>
 </footer>
 
 <!-- MODAL EPISODIO -->
-<div class="modal open" id="modal"><div class="sheet" id="sheet">
-    <div class="sheet-top"><div class="cover" style="background:linear-gradient(100deg, #7209b7 0%, #3a0ca3 100%);--hl:#ffd166">
-    <div class="pat" style="background:radial-gradient(rgba(255,255,255,.5) 1.5px, transparent 1.6px) 0 0/18px 18px"></div>
-    <div class="c-num">6</div>
-    <div class="c-emoji">⚖️</div>
-    <div class="c-tag">M1 · EP 6</div>
-    <div class="logo-mini">EV</div>
-    <div class="c-title">Reglas del juego:<em>ética de la IA en clase</em></div>
-  </div><button class="close" onclick="closeModal()">✕</button></div>
-    <div class="sheet-body">
-      <div class="btns">
-        <a class="btn btn-play " href="https://notebooklm.link.google/AEJ5gpkUMABA" target="_blank" rel="noopener">▶ Ver en YouTube</a>
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+
+<!-- MODAL AUTENTICACIÓN (CONTRASEÑA 1234) -->
+<div class="modal" id="authModal">
+  <div class="auth-card">
+    <button class="close" onclick="closeAuthModal()">✕</button>
+    <h3>🔒 Acceso Administrador</h3>
+    <p>Introduce la contraseña docente para gestionar y modificar los enlaces a los vídeos:</p>
+    <form onsubmit="verifyPassword(event)">
+      <input id="passInput" type="password" placeholder="••••" maxlength="12" autocomplete="current-password" autofocus>
+      <div class="btns-auth">
+        <button type="button" class="f-btn" onclick="closeAuthModal()">Cancelar</button>
+        <button type="submit" class="f-btn primary">Desbloquear</button>
       </div>
-      <h3>Reglas del juego: ética de la IA en clase</h3>
-      <div class="sub">Temporada 1 · Episodio 6 · Fundamentos de IA y uso responsable</div>
-      <p>Cómo pactar con tu alumnado un uso honesto y responsable de la IA: normas de aula, autoría, plagio y evaluación justa.</p>
-      <ul><li>Semáforo de uso de la IA en tareas</li><li>Citar y declarar el uso de IA</li><li>Plantilla de normas para el aula</li></ul>
-      <div class="edit">
-        <label>Enlace del vídeo (YouTube u otra plataforma):</label>
-        <div class="f">
-          <input id="urlIn" type="url" placeholder="https://youtu.be/..." value="https://notebooklm.link.google/AEJ5gpkUMABA">
-          <button onclick="setLink('m1-6',0,5)">Guardar enlace</button>
-        </div>
-        <div class="edit-subactions">
-          <button class="btn-download-html" onclick="downloadCurrentHtml()">💾 Descargar index.html actualizado</button>
-        </div>
-      </div>
-    </div></div></div>
+    </form>
+  </div>
+</div>
 
 <!-- MODAL GESTOR GENERAL DE ENLACES -->
 <div class="modal" id="manageModal">
   <div class="manage-sheet">
     <button class="close" onclick="closeManagerModal()">✕</button>
     <h2>⚙️ Gestor de Enlaces del Catálogo</h2>
-    <p class="intro">Introduce o actualiza los links de los 24 episodios. Puedes guardar y <strong>descargar la web actualizada (index.html)</strong> directamente para que conserve todos los nuevos links permanentemente.</p>
+    <p class="intro">Introduce o actualiza los links de los 24 episodios. Cada vez que introduzcas uno, puedes <strong>modificar automáticamente el index.html del repositorio de GitHub</strong> para que la web se actualice sola.</p>
+
+    <!-- CAJA DE CONFIGURACIÓN DE GITHUB -->
+    <div class="gh-box">
+      <h4>🐙 Sincronización automática con GitHub (Curiousminds123/AULAFLIX-)</h4>
+      <p>Para guardar los cambios directamente en tu repositorio de GitHub desde aquí, introduce tu <strong>GitHub Personal Access Token (PAT)</strong> con permisos de <code>repo</code> o <code>contents:write</code>. Se guardará de forma segura solo en tu navegador.</p>
+      <div class="gh-inputs">
+        <input type="password" id="ghTokenInput" placeholder="Pega tu GitHub Token (ghp_... o github_pat_...)" value="">
+        <button class="f-btn blue" onclick="saveGhToken()">Guardar Token</button>
+        <button class="f-btn" onclick="lockAdminSession()">🔒 Salir modo Admin</button>
+      </div>
+    </div>
 
     <div class="bulk-box">
       <h4>📥 Importar lista rápida de enlaces (desde archivo de texto)</h4>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Pega aquí el contenido de <code>Lista de videos para el catalogo de AULAXLIX.txt</code> o una lista de URLs en orden:</p>
-      <textarea id="bulkInput" placeholder="T1E1 = https://youtu.be/...
-T1E2 = https://youtu.be/..."></textarea>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Pega aquí el contenido de <code>Lista de videos para el catalogo de AULAXLIX.txt</code> o líneas con formato <code>T1E1 = https://youtu.be/...</code>:</p>
+      <textarea id="bulkInput" placeholder="T1E1 = https://youtu.be/...&#10;T1E2 = https://youtu.be/..."></textarea>
       <div class="btn-row">
         <button class="f-btn primary" onclick="processBulkLinks()">Procesar y aplicar enlaces</button>
         <button class="f-btn" onclick="populateBulkFromCurrent()">Cargar enlaces actuales en el recuadro</button>
@@ -581,333 +273,120 @@ T1E2 = https://youtu.be/..."></textarea>
     <div class="manage-footer">
       <span style="font-size:13px;color:var(--muted)">Edocentia en vídeo · Materiales creados por Ana H. Iranzo</span>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="f-btn" onclick="saveAllFromManager(false)">Guardar cambios</button>
-        <button class="f-btn primary" onclick="saveAllFromManager(true)">💾 Guardar y Descargar index.html</button>
+        <button class="f-btn" onclick="saveAllFromManager(false)">Guardar en este navegador</button>
+        <button class="f-btn" onclick="downloadCurrentHtml()">💾 Descargar index.html</button>
+        <button class="f-btn blue" onclick="saveAndPushToGitHub()">🚀 Guardar y subir a GitHub automáticamente</button>
       </div>
     </div>
   </div>
 </div>
 
-<div class="toast" id="toast">Enlace guardado. ¡Pulsa 'Descargar index.html' para fijarlo!</div>
+<div class="toast" id="toast"></div>
 
 <script>
 /* =========================================================
    CONTENIDOS — EDOCENTIA EN VÍDEO
    Materiales creados por Ana H. Iranzo
    ========================================================= */
+const ADMIN_PASSWORD = "1234";
+const GH_OWNER = "Curiousminds123";
+const GH_REPO = "AULAFLIX-";
+const GH_BRANCH = "main";
+const GH_PATH = "index.html";
+
 const MODULES = [
-  {
-    "id": "m1",
-    "n": 1,
-    "name": "Fundamentos de IA y uso responsable",
-    "desc": "Introducción a la IA en educación, principales herramientas, privacidad, protección de datos y uso ético y seguro.",
-    "c1": "#3a0ca3",
-    "c2": "#7209b7",
-    "hl": "#ffd166",
-    "pat": "dots",
-    "videos": [
-      {
-        "t": "IA en el aula:|lo que nadie te ha contado",
-        "e": "🧠",
-        "url": "https://youtu.be/Gcpd-rXg8Bk",
-        "d": "Qué es realmente la inteligencia artificial generativa, qué puede y qué no puede hacer, y por qué va a cambiar tu forma de preparar las clases.",
-        "pts": [
-          "Qué es la IA generativa explicado sin tecnicismos",
-          "Mitos y realidades en educación",
-          "Primeros usos útiles para un docente"
-        ]
-      },
-      {
-        "t": "El mapa de la IA:|qué herramienta usar y cuándo",
-        "e": "🗺️",
-        "url": "",
-        "d": "Un recorrido rápido por ChatGPT, Copilot, Gemini, Claude, NotebookLM, Canva y Gamma para que sepas cuál elegir en cada situación.",
-        "pts": [
-          "Chatbots, generadores de imagen y asistentes",
-          "Versiones gratuitas y cuentas educativas",
-          "Tabla de decisión rápida"
-        ]
-      },
-      {
-        "t": "El arte del prompt:|pide y se te dará",
-        "e": "✍️",
-        "url": "",
-        "d": "Aprende a escribir instrucciones claras que den resultados de calidad a la primera: rol, contexto, tarea, formato y ejemplos.",
-        "pts": [
-          "Fórmula de prompt para docentes",
-          "Iterar y refinar respuestas",
-          "Biblioteca de prompts para el aula"
-        ]
-      },
-      {
-        "t": "Tus datos, a salvo:|privacidad y RGPD",
-        "e": "🔒",
-        "url": "",
-        "d": "Qué información nunca debes introducir en una IA, cómo anonimizar datos del alumnado y qué dice la normativa de protección de datos.",
-        "pts": [
-          "Datos personales y datos sensibles",
-          "Cómo anonimizar antes de usar la IA",
-          "Configuración de privacidad de cada herramienta"
-        ]
-      },
-      {
-        "t": "Alucinaciones y sesgos:|cuando la IA miente",
-        "e": "🕵️",
-        "url": "",
-        "d": "La IA puede inventarse datos con total seguridad. Aprende a detectar errores, contrastar fuentes y enseñar pensamiento crítico.",
-        "pts": [
-          "Por qué alucina la IA",
-          "Detectar sesgos en las respuestas",
-          "Estrategias de verificación"
-        ]
-      },
-      {
-        "t": "Reglas del juego:|ética de la IA en clase",
-        "e": "⚖️",
-        "url": "https://notebooklm.link.google/AEJ5gpkUMABA",
-        "d": "Cómo pactar con tu alumnado un uso honesto y responsable de la IA: normas de aula, autoría, plagio y evaluación justa.",
-        "pts": [
-          "Semáforo de uso de la IA en tareas",
-          "Citar y declarar el uso de IA",
-          "Plantilla de normas para el aula"
-        ]
-      }
-    ]
-  },
-  {
-    "id": "m2",
-    "n": 2,
-    "name": "Herramientas de IA para crear materiales",
-    "desc": "Presentaciones, imágenes y materiales educativos más visuales y atractivos con Copilot, Gemini, Canva, Gamma y NotebookLM.",
-    "c1": "#f72585",
-    "c2": "#ff8c42",
-    "hl": "#fff3b0",
-    "pat": "stripes",
-    "videos": [
-      {
-        "t": "Presentaciones en|5 minutos con Gamma",
-        "e": "⚡",
-        "url": "",
-        "d": "De un simple tema a una presentación completa y con diseño profesional en minutos. Edita, ajusta el estilo y exporta.",
-        "pts": [
-          "Generar desde un tema o un documento",
-          "Editar tarjetas y diseño",
-          "Exportar a PDF o PowerPoint"
-        ]
-      },
-      {
-        "t": "Copilot:|tu ayudante en Microsoft 365",
-        "e": "🤖",
-        "url": "",
-        "d": "Usa Copilot para redactar, resumir, crear presentaciones y generar imágenes desde las herramientas de Microsoft que ya conoces.",
-        "pts": [
-          "Copilot en Word y PowerPoint",
-          "Resúmenes y adaptaciones de texto",
-          "Imágenes con Designer"
-        ]
-      },
-      {
-        "t": "Gemini:|de la idea al material",
-        "e": "✨",
-        "url": "",
-        "d": "Fichas, rúbricas, actividades por niveles y Gems personalizados: saca todo el partido a Gemini y Google Workspace.",
-        "pts": [
-          "Generar fichas y rúbricas",
-          "Crear un Gem docente",
-          "Exportar a Docs y Presentaciones"
-        ]
-      },
-      {
-        "t": "Canva Magic Studio:|diseña sin ser diseñador",
-        "e": "🎨",
-        "url": "",
-        "d": "Infografías, carteles y fichas visuales con las herramientas mágicas de Canva para Educación.",
-        "pts": [
-          "Magic Design y Magic Write",
-          "Plantillas educativas",
-          "Compartir con el alumnado"
-        ]
-      },
-      {
-        "t": "Imágenes con IA|que enamoran",
-        "e": "🖼️",
-        "url": "",
-        "d": "Crea ilustraciones, escenas y personajes para tus materiales con prompts visuales efectivos, respetando derechos y licencias.",
-        "pts": [
-          "Prompts para imágenes: estilo, encuadre, luz",
-          "Coherencia entre imágenes",
-          "Uso legal y responsable"
-        ]
-      },
-      {
-        "t": "NotebookLM:|tus apuntes hechos podcast",
-        "e": "🎧",
-        "url": "",
-        "d": "Sube tus documentos y conviértelos en resúmenes, guías de estudio, mapas mentales y podcasts generados por IA.",
-        "pts": [
-          "Crear un cuaderno con tus fuentes",
-          "Resumen en audio y mapa mental",
-          "Guías de estudio para el alumnado"
-        ]
-      }
-    ]
-  },
-  {
-    "id": "m3",
-    "n": 3,
-    "name": "Recursos interactivos con vibe coding",
-    "desc": "Juegos, cuestionarios, simuladores y pequeñas apps educativas creadas con IA, sin necesidad de saber programar.",
-    "c1": "#06d6a0",
-    "c2": "#118ab2",
-    "hl": "#ffe66d",
-    "pat": "grid",
-    "videos": [
-      {
-        "t": "Vibe coding:|programa sin saber programar",
-        "e": "🪄",
-        "url": "",
-        "d": "Descubre el vibe coding: describes lo que quieres en lenguaje natural y la IA escribe el código. Tu primera app en directo.",
-        "pts": [
-          "Qué es el vibe coding",
-          "Herramientas: Claude, Gemini Canvas, ChatGPT",
-          "Tu primera página interactiva"
-        ]
-      },
-      {
-        "t": "Tu primer juego|educativo en 10 minutos",
-        "e": "🎮",
-        "url": "",
-        "d": "Crea un juego de vocabulario, de memoria o de preguntas totalmente funcional describiéndolo paso a paso.",
-        "pts": [
-          "Juego de parejas y ruleta",
-          "Añadir puntuación y sonidos",
-          "Probar y corregir errores"
-        ]
-      },
-      {
-        "t": "Quizzes que|enganchan",
-        "e": "❓",
-        "url": "",
-        "d": "Cuestionarios interactivos con temporizador, feedback inmediato y retos por niveles que tus alumnos querrán repetir.",
-        "pts": [
-          "Tipos de pregunta y feedback",
-          "Niveles y temporizador",
-          "Personalizar diseño y colores"
-        ]
-      },
-      {
-        "t": "Simuladores:|la ciencia que se toca",
-        "e": "🧪",
-        "url": "",
-        "d": "Construye simuladores para experimentar con variables: física, matemáticas, economía o lo que imagines.",
-        "pts": [
-          "Deslizadores y gráficas en vivo",
-          "Ideas por materia",
-          "Guía didáctica del simulador"
-        ]
-      },
-      {
-        "t": "Escape room|digital para tu aula",
-        "e": "🗝️",
-        "url": "",
-        "d": "Diseña un escape room con enigmas encadenados, candados y pistas, todo en una sola página web.",
-        "pts": [
-          "Narrativa y estructura de retos",
-          "Candados y códigos",
-          "Final y recompensas"
-        ]
-      },
-      {
-        "t": "Pule y publica|tu app educativa",
-        "e": "🚀",
-        "url": "",
-        "d": "Mejora el diseño, corrige errores, haz tu app accesible y prepárala para compartirla o subirla a Aules.",
-        "pts": [
-          "Depurar con la ayuda de la IA",
-          "Diseño responsive y accesible",
-          "Guardar como archivo HTML"
-        ]
-      }
-    ]
-  },
-  {
-    "id": "m4",
-    "n": 4,
-    "name": "Inteligencia artificial y Aules",
-    "desc": "Integración de recursos en Aules mediante HTML, SCORM, GIFT y otros formatos. Personalización del aula, actividades interactivas y evaluación.",
-    "c1": "#ef233c",
-    "c2": "#5a189a",
-    "hl": "#8ecae6",
-    "pat": "waves",
-    "videos": [
-      {
-        "t": "Aules a tu medida:|un aula que inspira",
-        "e": "🏫",
-        "url": "",
-        "d": "Personaliza tu curso de Aules con banners, etiquetas, botones y una estructura clara creados con ayuda de la IA.",
-        "pts": [
-          "Cabeceras y banners con IA",
-          "Etiquetas HTML con estilo",
-          "Organización por secciones"
-        ]
-      },
-      {
-        "t": "HTML en Aules:|incrusta tus creaciones",
-        "e": "🧩",
-        "url": "",
-        "d": "Lleva a Aules los juegos y apps que has creado: archivos HTML, páginas y recursos incrustados paso a paso.",
-        "pts": [
-          "Subir un archivo HTML",
-          "Mostrar en página o incrustado",
-          "Solución de problemas frecuentes"
-        ]
-      },
-      {
-        "t": "SCORM sin miedo:|actividades que califican solas",
-        "e": "📦",
-        "url": "",
-        "d": "Empaqueta tus recursos como SCORM para que Aules registre la nota y el progreso de cada alumno automáticamente.",
-        "pts": [
-          "Qué es un paquete SCORM",
-          "Crear el paquete con IA",
-          "Configurar calificación en Aules"
-        ]
-      },
-      {
-        "t": "GIFT + IA:|100 preguntas en 1 minuto",
-        "e": "💯",
-        "url": "",
-        "d": "Genera bancos de preguntas en formato GIFT con IA e impórtalos en Aules para crear cuestionarios en segundos.",
-        "pts": [
-          "Sintaxis GIFT explicada",
-          "Prompt para generar preguntas",
-          "Importar al banco de preguntas"
-        ]
-      },
-      {
-        "t": "Actividades|interactivas que enganchan",
-        "e": "🎯",
-        "url": "",
-        "d": "H5P, lecciones, glosarios y foros potenciados con IA para un aula virtual dinámica y participativa.",
-        "pts": [
-          "H5P: vídeo interactivo y más",
-          "Lecciones con ramificaciones",
-          "Foros y glosarios colaborativos"
-        ]
-      },
-      {
-        "t": "Evaluar mejor|en menos tiempo",
-        "e": "⏱️",
-        "url": "",
-        "d": "Rúbricas, retroalimentación personalizada y seguimiento del progreso con IA y las herramientas de Aules.",
-        "pts": [
-          "Rúbricas generadas con IA",
-          "Feedback rápido y personalizado",
-          "Informes y seguimiento del alumnado"
-        ]
-      }
-    ]
-  }
+  { id:"m1", n:1, name:"Fundamentos de IA y uso responsable",
+    desc:"Introducción a la IA en educación, principales herramientas, privacidad, protección de datos y uso ético y seguro.",
+    c1:"#3a0ca3", c2:"#7209b7", hl:"#ffd166", pat:"dots",
+    videos:[
+      {t:"IA en el aula:|lo que nadie te ha contado", e:"🧠", url:"https://youtu.be/Gcpd-rXg8Bk",
+       d:"Qué es realmente la inteligencia artificial generativa, qué puede y qué no puede hacer, y por qué va a cambiar tu forma de preparar las clases.",
+       pts:["Qué es la IA generativa explicado sin tecnicismos","Mitos y realidades en educación","Primeros usos útiles para un docente"]},
+      {t:"El mapa de la IA:|qué herramienta usar y cuándo", e:"🗺️", url:"",
+       d:"Un recorrido rápido por ChatGPT, Copilot, Gemini, Claude, NotebookLM, Canva y Gamma para que sepas cuál elegir en cada situación.",
+       pts:["Chatbots, generadores de imagen y asistentes","Versiones gratuitas y cuentas educativas","Tabla de decisión rápida"]},
+      {t:"El arte del prompt:|pide y se te dará", e:"✍️", url:"",
+       d:"Aprende a escribir instrucciones claras que den resultados de calidad a la primera: rol, contexto, tarea, formato y ejemplos.",
+       pts:["Fórmula de prompt para docentes","Iterar y refinar respuestas","Biblioteca de prompts para el aula"]},
+      {t:"Tus datos, a salvo:|privacidad y RGPD", e:"🔒", url:"",
+       d:"Qué información nunca debes introducir en una IA, cómo anonimizar datos del alumnado y qué dice la normativa de protección de datos.",
+       pts:["Datos personales y datos sensibles","Cómo anonimizar antes de usar la IA","Configuración de privacidad de cada herramienta"]},
+      {t:"Alucinaciones y sesgos:|cuando la IA miente", e:"🕵️", url:"",
+       d:"La IA puede inventarse datos con total seguridad. Aprende a detectar errores, contrastar fuentes y enseñar pensamiento crítico.",
+       pts:["Por qué alucina la IA","Detectar sesgos en las respuestas","Estrategias de verificación"]},
+      {t:"Reglas del juego:|ética de la IA en clase", e:"⚖️", url:"",
+       d:"Cómo pactar con tu alumnado un uso honesto y responsable de la IA: normas de aula, autoría, plagio y evaluación justa.",
+       pts:["Semáforo de uso de la IA en tareas","Citar y declarar el uso de IA","Plantilla de normas para el aula"]}
+    ]},
+  { id:"m2", n:2, name:"Herramientas de IA para crear materiales",
+    desc:"Presentaciones, imágenes y materiales educativos más visuales y atractivos con Copilot, Gemini, Canva, Gamma y NotebookLM.",
+    c1:"#f72585", c2:"#ff8c42", hl:"#fff3b0", pat:"stripes",
+    videos:[
+      {t:"Presentaciones en|5 minutos con Gamma", e:"⚡", url:"",
+       d:"De un simple tema a una presentación completa y con diseño profesional en minutos. Edita, ajusta el estilo y exporta.",
+       pts:["Generar desde un tema o un documento","Editar tarjetas y diseño","Exportar a PDF o PowerPoint"]},
+      {t:"Copilot:|tu ayudante en Microsoft 365", e:"🤖", url:"",
+       d:"Usa Copilot para redactar, resumir, crear presentaciones y generar imágenes desde las herramientas de Microsoft que ya conoces.",
+       pts:["Copilot en Word y PowerPoint","Resúmenes y adaptaciones de texto","Imágenes con Designer"]},
+      {t:"Gemini:|de la idea al material", e:"✨", url:"",
+       d:"Fichas, rúbricas, actividades por niveles y Gems personalizados: saca todo el partido a Gemini y Google Workspace.",
+       pts:["Generar fichas y rúbricas","Crear un Gem docente","Exportar a Docs y Presentaciones"]},
+      {t:"Canva Magic Studio:|diseña sin ser diseñador", e:"🎨", url:"",
+       d:"Infografías, carteles y fichas visuales con las herramientas mágicas de Canva para Educación.",
+       pts:["Magic Design y Magic Write","Plantillas educativas","Compartir con el alumnado"]},
+      {t:"Imágenes con IA|que enamoran", e:"🖼️", url:"",
+       d:"Crea ilustraciones, escenas y personajes para tus materiales con prompts visuales efectivos, respetando derechos y licencias.",
+       pts:["Prompts para imágenes: estilo, encuadre, luz","Coherencia entre imágenes","Uso legal y responsable"]},
+      {t:"NotebookLM:|tus apuntes hechos podcast", e:"🎧", url:"",
+       d:"Sube tus documentos y conviértelos en resúmenes, guías de estudio, mapas mentales y podcasts generados por IA.",
+       pts:["Crear un cuaderno con tus fuentes","Resumen en audio y mapa mental","Guías de estudio para el alumnado"]}
+    ]},
+  { id:"m3", n:3, name:"Recursos interactivos con vibe coding",
+    desc:"Juegos, cuestionarios, simuladores y pequeñas apps educativas creadas con IA, sin necesidad de saber programar.",
+    c1:"#06d6a0", c2:"#118ab2", hl:"#ffe66d", pat:"grid",
+    videos:[
+      {t:"Vibe coding:|programa sin saber programar", e:"🪄", url:"",
+       d:"Descubre el vibe coding: describes lo que quieres en lenguaje natural y la IA escribe el código. Tu primera app en directo.",
+       pts:["Qué es el vibe coding","Herramientas: Claude, Gemini Canvas, ChatGPT","Tu primera página interactiva"]},
+      {t:"Tu primer juego|educativo en 10 minutos", e:"🎮", url:"",
+       d:"Crea un juego de vocabulario, de memoria o de preguntas totalmente funcional describiéndolo paso a paso.",
+       pts:["Juego de parejas y ruleta","Añadir puntuación y sonidos","Probar y corregir errores"]},
+      {t:"Quizzes que|enganchan", e:"❓", url:"",
+       d:"Cuestionarios interactivos con temporizador, feedback inmediato y retos por niveles que tus alumnos querrán repetir.",
+       pts:["Tipos de pregunta y feedback","Niveles y temporizador","Personalizar diseño y colores"]},
+      {t:"Simuladores:|la ciencia que se toca", e:"🧪", url:"",
+       d:"Construye simuladores para experimentar con variables: física, matemáticas, economía o lo que imagines.",
+       pts:["Deslizadores y gráficas en vivo","Ideas por materia","Guía didáctica del simulador"]},
+      {t:"Escape room|digital para tu aula", e:"🗝️", url:"",
+       d:"Diseña un escape room con enigmas encadenados, candados y pistas, todo en una sola página web.",
+       pts:["Narrativa y estructura de retos","Candados y códigos","Final y recompensas"]},
+      {t:"Pule y publica|tu app educativa", e:"🚀", url:"",
+       d:"Mejora el diseño, corrige errores, haz tu app accesible y prepárala para compartirla o subirla a Aules.",
+       pts:["Depurar con la ayuda de la IA","Diseño responsive y accesible","Guardar como archivo HTML"]}
+    ]},
+  { id:"m4", n:4, name:"Inteligencia artificial y Aules",
+    desc:"Integración de recursos en Aules mediante HTML, SCORM, GIFT y otros formatos. Personalización del aula, actividades interactivas y evaluación.",
+    c1:"#ef233c", c2:"#5a189a", hl:"#8ecae6", pat:"waves",
+    videos:[
+      {t:"Aules a tu medida:|un aula que inspira", e:"🏫", url:"",
+       d:"Personaliza tu curso de Aules con banners, etiquetas, botones y una estructura clara creados con ayuda de la IA.",
+       pts:["Cabeceras y banners con IA","Etiquetas HTML con estilo","Organización por secciones"]},
+      {t:"HTML en Aules:|incrusta tus creaciones", e:"🧩", url:"",
+       d:"Lleva a Aules los juegos y apps que has creado: archivos HTML, páginas y recursos incrustados paso a paso.",
+       pts:["Subir un archivo HTML","Mostrar en página o incrustado","Solución de problemas frecuentes"]},
+      {t:"SCORM sin miedo:|actividades que califican solas", e:"📦", url:"",
+       d:"Empaqueta tus recursos como SCORM para que Aules registre la nota y el progreso de cada alumno automáticamente.",
+       pts:["Qué es un paquete SCORM","Crear el paquete con IA","Configurar calificación en Aules"]},
+      {t:"GIFT + IA:|100 preguntas en 1 minuto", e:"💯", url:"",
+       d:"Genera bancos de preguntas en formato GIFT con IA e impórtalos en Aules para crear cuestionarios en segundos.",
+       pts:["Sintaxis GIFT explicada","Prompt para generar preguntas","Importar al banco de preguntas"]},
+      {t:"Actividades|interactivas que enganchan", e:"🎯", url:"",
+       d:"H5P, lecciones, glosarios y foros potenciados con IA para un aula virtual dinámica y participativa.",
+       pts:["H5P: vídeo interactivo y más","Lecciones con ramificaciones","Foros y glosarios colaborativos"]},
+      {t:"Evaluación con IA:|evaluar mejor en menos tiempo", e:"📝", url:"https://youtu.be/HVgvkiFPsgc",
+       d:"Rúbricas con IA, retroalimentación formativa y personalizada, y evaluación del aprendizaje con las herramientas de Aules.",
+       pts:["Rúbricas generadas con IA","Feedback rápido y personalizado","Diseño de instrumentos de evaluación"]}
+    ]}
 ];
 
 /* ---------- Enlaces guardados en LocalStorage ---------- */
@@ -934,7 +413,83 @@ function saveLink(key,val,mi,idx){
   try{ localStorage.setItem(LS_KEY, JSON.stringify(saved)); }catch(e){}
 }
 
-/* ---------- Patrones visuales de portadas ---------- */
+/* ---------- SISTEMA DE AUTENTICACIÓN (CONTRASEÑA 1234) ---------- */
+function isAdmin(){
+  return sessionStorage.getItem("edocentia_admin_auth") === "true";
+}
+
+let pendingAction = null;
+function requireAdmin(action){
+  if(isAdmin()){
+    action();
+  } else {
+    pendingAction = action;
+    openAuthModal();
+  }
+}
+
+function openAuthModal(){
+  document.getElementById("passInput").value = "";
+  document.getElementById("authModal").classList.add("open");
+  setTimeout(() => document.getElementById("passInput").focus(), 150);
+}
+
+function closeAuthModal(){
+  document.getElementById("authModal").classList.remove("open");
+  pendingAction = null;
+}
+
+function verifyPassword(e){
+  if(e) e.preventDefault();
+  const val = document.getElementById("passInput").value.trim();
+  if(val === ADMIN_PASSWORD){
+    sessionStorage.setItem("edocentia_admin_auth", "true");
+    updateAdminUiState();
+    closeAuthModal();
+    toast("🔓 ¡Modo Administrador desbloqueado!");
+    if(pendingAction){
+      const act = pendingAction;
+      pendingAction = null;
+      act();
+    }
+  } else {
+    toast("❌ Contraseña incorrecta. Inténtalo de nuevo.");
+    document.getElementById("passInput").value = "";
+    document.getElementById("passInput").focus();
+  }
+}
+
+function lockAdminSession(){
+  sessionStorage.removeItem("edocentia_admin_auth");
+  updateAdminUiState();
+  closeManagerModal();
+  closeModal();
+  toast("🔒 Modo Administrador cerrado");
+}
+
+function updateAdminUiState(){
+  const badge = document.getElementById("adminBadge");
+  if(badge){
+    badge.classList.toggle("active", isAdmin());
+  }
+}
+
+function handleManagerClick(){
+  requireAdmin(() => openManagerModal());
+}
+
+function handleDownloadOrPush(){
+  requireAdmin(() => {
+    const token = localStorage.getItem("edocentia_gh_token");
+    if(token){
+      saveAndPushToGitHub();
+    } else {
+      openManagerModal();
+    }
+  });
+}
+
+/* ---------- PATRONES VISUALES ---------- */
 function patternCSS(p){
   switch(p){
     case "dots":    return "radial-gradient(rgba(255,255,255,.5) 1.5px, transparent 1.6px) 0 0/18px 18px";
@@ -1018,6 +573,29 @@ function scrollRow(btn,dir){
 const modal=document.getElementById("modal");
 function openModal(mi,i){
   const m=MODULES[mi], v=m.videos[i], u=urlOf(m,i), key=m.id+"-"+(i+1);
+  const adminUnlocked = isAdmin();
+
+  let adminEditSection = "";
+  if(adminUnlocked){
+    adminEditSection = `
+      <div class="edit">
+        <label>⚙️ Enlace del vídeo (Modo Docente activo):</label>
+        <div class="f">
+          <input id="urlIn" type="url" placeholder="https://youtu.be/..." value="${u}">
+          <button onclick="setLinkSingle('${key}',${mi},${i})">Guardar</button>
+        </div>
+        <div class="edit-subactions">
+          <button class="btn-gh-push" onclick="setLinkAndPushSingle('${key}',${mi},${i})">🚀 Guardar y subir a GitHub</button>
+          <button class="btn-download-html" onclick="downloadCurrentHtml()">💾 Descargar index.html</button>
+        </div>
+      </div>`;
+  } else {
+    adminEditSection = `
+      <div style="border-top:1px solid #23232c;margin-top:16px;padding-top:10px">
+        <span class="lock-hint" onclick="requireAdmin(() => openModal(${mi},${i}))">🔒 Editar enlace del vídeo (requiere contraseña)</span>
+      </div>`;
+  }
+
   document.getElementById("sheet").innerHTML = `
     <div class="sheet-top">${coverHTML(m,i)}<button class="close" onclick="closeModal()">✕</button></div>
     <div class="sheet-body">
@@ -1028,37 +606,39 @@ function openModal(mi,i){
       <div class="sub">Temporada ${m.n} · Episodio ${i+1} · ${m.name}</div>
       <p>${v.d}</p>
       <ul>${v.pts.map(p=>`<li>${p}</li>`).join("")}</ul>
-      <div class="edit">
-        <label>Enlace del vídeo (YouTube u otra plataforma):</label>
-        <div class="f">
-          <input id="urlIn" type="url" placeholder="https://youtu.be/..." value="${u}">
-          <button onclick="setLink('${key}',${mi},${i})">Guardar enlace</button>
-        </div>
-        <div class="edit-subactions">
-          <button class="btn-download-html" onclick="downloadCurrentHtml()">💾 Descargar index.html actualizado</button>
-        </div>
-      </div>
+      ${adminEditSection}
     </div>`;
   modal.classList.add("open");
   document.body.style.overflow="hidden";
 }
 function closeModal(){ modal.classList.remove("open"); document.body.style.overflow=""; }
 modal.addEventListener("click",e=>{ if(e.target===modal) closeModal(); });
-document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeModal(); closeManagerModal(); } });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeModal(); closeManagerModal(); closeAuthModal(); } });
 
-function setLink(key,mi,i){
+function setLinkSingle(key,mi,i){
   const val=document.getElementById("urlIn").value.trim();
   saveLink(key,val,mi,i);
   renderRows(document.getElementById("q").value);
   if(mi===0&&i===0) renderHero();
   openModal(mi,i);
-  toast(val ? "Enlace guardado. ¡Pulsa 'Descargar index.html' para fijarlo!" : "Enlace eliminado");
+  toast(val ? "Enlace guardado en navegador" : "Enlace eliminado");
+}
+
+function setLinkAndPushSingle(key,mi,i){
+  const val=document.getElementById("urlIn").value.trim();
+  saveLink(key,val,mi,i);
+  renderRows(document.getElementById("q").value);
+  if(mi===0&&i===0) renderHero();
+  openModal(mi,i);
+  saveAndPushToGitHub();
 }
 
 /* ---------- GESTOR GENERAL DE ENLACES ---------- */
 const manageModal = document.getElementById("manageModal");
 function openManagerModal(){
   renderManagerGrid();
+  const token = localStorage.getItem("edocentia_gh_token") || "";
+  document.getElementById("ghTokenInput").value = token;
   manageModal.classList.add("open");
   document.body.style.overflow="hidden";
 }
@@ -1092,6 +672,17 @@ function renderManagerGrid(){
   container.innerHTML = html;
 }
 
+function saveGhToken(){
+  const token = document.getElementById("ghTokenInput").value.trim();
+  if(!token){
+    localStorage.removeItem("edocentia_gh_token");
+    toast("Token de GitHub eliminado");
+  } else {
+    localStorage.setItem("edocentia_gh_token", token);
+    toast("🔑 Token de GitHub guardado en tu navegador");
+  }
+}
+
 function saveAllFromManager(andDownload = false){
   const inputs = document.querySelectorAll("#manageGrid input[data-key]");
   inputs.forEach(inp => {
@@ -1104,7 +695,7 @@ function saveAllFromManager(andDownload = false){
   renderRows(document.getElementById("q").value);
   renderHero();
   renderManagerGrid();
-  toast("¡Todos los enlaces han sido guardados!");
+  toast("¡Todos los enlaces han sido guardados localmente!");
   if(andDownload){
     downloadCurrentHtml();
   }
@@ -1135,7 +726,6 @@ function processBulkLinks(){
     const trimmed = line.trim();
     if(!trimmed || trimmed.startsWith("#")) return;
 
-    // Patrón T1E1 o M1E1 o similar
     const match = trimmed.match(/T(\d+)\s*E(\d+)[\s\S]*?=\s*(https?:\/\/[^\s]+)/i);
     if(match){
       const season = parseInt(match[1], 10);
@@ -1150,7 +740,6 @@ function processBulkLinks(){
         }
       }
     } else {
-      // Buscar cualquier URL con número de episodio
       const epMatch = trimmed.match(/(\d+)[\s\S]*?(https?:\/\/[^\s]+)/);
       if(epMatch && !trimmed.toLowerCase().includes("temporada")){
         const num = parseInt(epMatch[1], 10);
@@ -1178,9 +767,8 @@ function processBulkLinks(){
   toast(`¡Se han importado y aplicado ${count} enlaces!`);
 }
 
-/* ---------- GENERAR Y DESCARGAR INDEX.HTML ACTUALIZADO ---------- */
+/* ---------- GENERAR HTML ACTUALIZADO ---------- */
 function generateUpdatedHtml(){
-  // Clona el documento actual y reemplaza el bloque MODULES con los links actuales
   const updatedModules = JSON.parse(JSON.stringify(MODULES));
   updatedModules.forEach(m => {
     m.videos.forEach((v, i) => {
@@ -1189,14 +777,12 @@ function generateUpdatedHtml(){
   });
 
   let fullHtml = document.documentElement.outerHTML;
-  // Regex para sustituir la definición de const MODULES = [...];
   const modulesJson = JSON.stringify(updatedModules, null, 2);
   const regex = /const MODULES = \[\s*\{[\s\S]*?\n\];/;
   
   if(regex.test(fullHtml)){
     fullHtml = "<!DOCTYPE html>\n<html lang=\"es\">\n" + fullHtml.replace(regex, `const MODULES = ${modulesJson};`) + "\n</html>";
   } else {
-    // Si no coincide exactamente el regex, descarga el código actual
     fullHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
   }
   return fullHtml;
@@ -1212,13 +798,95 @@ function downloadCurrentHtml(){
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(a.href);
-  toast("📥 ¡Archivo index.html descargado con todos los nuevos links!");
+  toast("📥 ¡Archivo index.html descargado con los nuevos enlaces!");
+}
+
+/* ---------- SINCRONIZACIÓN AUTOMÁTICA CON GITHUB REST API ---------- */
+async function saveAndPushToGitHub(){
+  let token = localStorage.getItem("edocentia_gh_token");
+  if(!token){
+    token = prompt("Introduce tu Personal Access Token de GitHub para actualizar el repositorio directamente:");
+    if(!token || !token.trim()){
+      toast("Se canceló la sincronización. Puedes descargar index.html manualmente.");
+      return;
+    }
+    token = token.trim();
+    localStorage.setItem("edocentia_gh_token", token);
+  }
+
+  // Guardar inputs si estamos en el modal de gestión
+  const inputs = document.querySelectorAll("#manageGrid input[data-key]");
+  if(inputs && inputs.length > 0){
+    inputs.forEach(inp => {
+      saveLink(inp.dataset.key, inp.value.trim(), parseInt(inp.dataset.mi,10), parseInt(inp.dataset.idx,10));
+    });
+  }
+
+  toast("⏳ Conectando con GitHub para actualizar index.html...");
+
+  try {
+    const updatedContent = generateUpdatedHtml();
+    // Codificar a UTF-8 Base64 correctamente
+    const bytes = new TextEncoder().encode(updatedContent);
+    let binary = "";
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    const base64Content = btoa(binary);
+
+    // 1. Obtener SHA actual del archivo index.html
+    const getUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}?ref=${GH_BRANCH}`;
+    const getResp = await fetch(getUrl, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+
+    if(!getResp.ok){
+      const err = await getResp.json();
+      throw new Error(err.message || "Error al leer repositorio");
+    }
+
+    const fileData = await getResp.json();
+    const sha = fileData.sha;
+
+    // 2. Hacer commit y push directo a main
+    const putUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}`;
+    const putResp = await fetch(putUrl, {
+      method: "PUT",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/vnd.github.v3+json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: "Actualizar enlaces de vídeo desde panel Edocentia",
+        content: base64Content,
+        sha: sha,
+        branch: GH_BRANCH
+      })
+    });
+
+    if(!putResp.ok){
+      const putErr = await putResp.json();
+      throw new Error(putErr.message || "Error al actualizar archivo");
+    }
+
+    toast("🚀 ¡index.html actualizado en GitHub! La web se recompila sola.");
+    renderRows(document.getElementById("q").value);
+    renderHero();
+  } catch(error) {
+    console.error(error);
+    toast(`⚠️ Error en GitHub: ${error.message}. Descargando index.html...`);
+    downloadCurrentHtml();
+  }
 }
 
 /* ---------- UTILIDADES ---------- */
 function toast(msg){
   const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
-  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),2600);
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),3200);
 }
 
 document.getElementById("copyLinks").addEventListener("click",async()=>{
@@ -1231,10 +899,9 @@ document.getElementById("copyLinks").addEventListener("click",async()=>{
 document.getElementById("q").addEventListener("input",e=>renderRows(e.target.value));
 window.addEventListener("scroll",()=>document.getElementById("nav").classList.toggle("solid",scrollY>60));
 
+updateAdminUiState();
 renderHero();
 renderRows();
 </script>
-
-
-</body></html>
+</body>
 </html>

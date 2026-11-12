@@ -39,4 +39,5 @@ T4E2 - HTML en Aules: incrusta tus creaciones =
 T4E3 - SCORM sin miedo: actividades que califican solas = 
 T4E4 - GIFT + IA: 100 preguntas en 1 minuto = 
 T4E5 - Actividades interactivas que enganchan = 
-T4E6 - Evaluar mejor en menos tiempo = 
+T4E6 - Evaluación con IA: evaluar mejor en menos tiempo = https://youtu.be/HVgvkiFPsgc
+

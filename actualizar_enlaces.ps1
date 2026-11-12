@@ -5,7 +5,7 @@
 param(
     [string]$TxtFile = "Lista de videos para el catalogo de AULAXLIX.txt",
     [string]$HtmlFile = "index.html",
-    [switch]$AutoPush
+    [string]$Password = ""
 )
 
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -15,6 +15,21 @@ Write-Host "==========================================================" -Foregro
 Write-Host "   EDOCENTIA EN VÍDEO · Actualizador de Enlaces Web" -ForegroundColor Yellow
 Write-Host "   Materiales creados por Ana H. Iranzo" -ForegroundColor Gray
 Write-Host "==========================================================" -ForegroundColor Cyan
+
+# Control de contraseña de administración
+$ADMIN_PASS = "1234"
+if ([string]::IsNullOrWhiteSpace($Password)) {
+    $inputPass = Read-Host "`n🔒 Introduce la contraseña de administración (1234)"
+} else {
+    $inputPass = $Password
+}
+
+if ($inputPass -ne $ADMIN_PASS) {
+    Write-Host "`n❌ Contraseña incorrecta. Acceso denegado." -ForegroundColor Red
+    exit 1
+}
+
+Write-Host "`n🔓 Contraseña correcta. Acceso concedido." -ForegroundColor Green
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 if (-not $scriptDir) { $scriptDir = Get-Location }
@@ -52,26 +67,11 @@ function Update-HtmlWithLinks {
         [hashtable]$links
     )
 
-    $content = Get-Content -Path $path -Raw -Encoding UTF8
-    $totalUpdated = 0
-
-    foreach ($key in $links.Keys) {
-        $url = $links[$key]
-        if ($key -match 'T(\d+)E(\d+)') {
-            $season = [int]$Matches[1]
-            $ep = [int]$Matches[2]
-
-            # Buscar en el HTML la definición de este episodio dentro de su módulo y actualizar el url
-            # Patrón para el array de videos del módulo
-            # Buscaremos por título o posición
-        }
-    }
-
-    # Forma robusta y segura: parsear y actualizar línea a línea
     $lines = Get-Content -Path $path -Encoding UTF8
     $newLines = @()
     $currentModule = 0
     $currentEpInModule = 0
+    $totalUpdated = 0
 
     for ($i = 0; $i -lt $lines.Count; $i++) {
         $line = $lines[$i]
@@ -101,11 +101,20 @@ function Update-HtmlWithLinks {
     return $totalUpdated
 }
 
+function Push-ToGitHub {
+    Write-Host "`n🚀 Sincronizando y subiendo cambios automáticamente a GitHub..." -ForegroundColor Cyan
+    git add index.html "Lista de videos para el catalogo de AULAXLIX.txt"
+    git commit -m "Actualizar enlaces de vídeo - Edocentia en vídeo"
+    git push origin main
+    Write-Host "✅ ¡index.html actualizado en el repositorio GitHub!" -ForegroundColor Green
+    Write-Host "🌐 Repositorio: https://github.com/Curiousminds123/AULAFLIX-" -ForegroundColor Cyan
+}
+
 # --- Menú interactivo ---
 Write-Host "`n¿Qué deseas hacer?" -ForegroundColor Green
-Write-Host "1) Actualizar index.html usando '$TxtFile'"
-Write-Host "2) Introducir un enlace manualmente (ej: T1E2 o por temporada/episodio)"
-Write-Host "3) Subir cambios a GitHub (Curiousminds123/AULAFLIX-)"
+Write-Host "1) Actualizar index.html usando '$TxtFile' y subir a GitHub"
+Write-Host "2) Introducir un enlace manualmente (ej: T1E2 o T4E6) y subir a GitHub"
+Write-Host "3) Forzar subida a GitHub ahora mismo"
 Write-Host "4) Salir"
 
 $opcion = Read-Host "`nElige una opción (1-4)"
@@ -121,11 +130,12 @@ if ($opcion -eq "1") {
             Write-Host "  $k -> $($links[$k])" -ForegroundColor Gray
         }
         $count = Update-HtmlWithLinks -path $htmlPath -links $links
-        Write-Host "`n¡ÉXITO! index.html ha sido actualizado con los nuevos enlaces." -ForegroundColor Green
+        Write-Host "`n¡ÉXITO! index.html ha sido actualizado con los enlaces." -ForegroundColor Green
+        Push-ToGitHub
     }
 }
 elseif ($opcion -eq "2") {
-    $code = Read-Host "`nIntroduce el código del episodio (ejemplo: T1E2 o T2E5)"
+    $code = Read-Host "`nIntroduce el código del episodio (ejemplo: T1E2 o T4E6)"
     $code = $code.ToUpper().Trim()
     $url = Read-Host "Introduce la URL del vídeo (ejemplo: https://youtu.be/...)"
     $url = $url.Trim()
@@ -145,27 +155,17 @@ elseif ($opcion -eq "2") {
         }
 
         Write-Host "`n¡ÉXITO! Episodio $code actualizado con: $url" -ForegroundColor Green
+        Push-ToGitHub
     } else {
         Write-Host "Código de episodio o URL no válidos." -ForegroundColor Red
     }
 }
 elseif ($opcion -eq "3") {
-    # Solo push
+    Push-ToGitHub
 }
 else {
     Write-Host "Saliendo..." -ForegroundColor Gray
     exit 0
 }
 
-# Preguntar si desea hacer push a GitHub
-Write-Host "`n----------------------------------------------------------" -ForegroundColor DarkGray
-$doPush = Read-Host "¿Deseas guardar los cambios y subirlos a GitHub ahora mismo? (s/n)"
-if ($doPush -eq "s" -or $doPush -eq "S" -or $AutoPush) {
-    Write-Host "`nSubiendo a GitHub..." -ForegroundColor Cyan
-    git add .
-    git commit -m "Actualizar enlaces y contenidos de Edocentia en video"
-    git branch -M main
-    git push -u origin main
-    Write-Host "`n¡Subida completada en https://github.com/Curiousminds123/AULAFLIX-!" -ForegroundColor Green
-}
 Write-Host "`nListo. ¡Gracias por usar Edocentia en vídeo!" -ForegroundColor Cyan
