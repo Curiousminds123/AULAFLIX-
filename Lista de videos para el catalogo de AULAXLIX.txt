@@ -26,7 +26,7 @@ T2E5 - Imágenes con IA que enamoran =
 T2E6 - NotebookLM: tus apuntes hechos podcast = 
 
 TEMPORADA 3: Recursos interactivos con vibe coding
-T3E1 - Vibe coding: programa sin saber programar = 
+T3E1 - Apps en minutos: vibe coding sin programar = https://youtube.com/shorts/igV3GowwOdc
 T3E2 - Tu primer juego educativo en 10 minutos = 
 T3E3 - Quizzes que enganchan = 
 T3E4 - Simuladores: la ciencia que se toca = 

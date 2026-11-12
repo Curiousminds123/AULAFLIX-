@@ -31,6 +31,7 @@ El curso se compone de **4 temporadas** y **24 episodios**:
 1. **Temporada 1: Fundamentos de IA y uso responsable** (Episodios 1 al 6)
 2. **Temporada 2: Herramientas de IA para crear materiales** (Episodios 7 al 12)
 3. **Temporada 3: Recursos interactivos con vibe coding** (Episodios 13 al 18)
+   - *Episodio 13:* **Apps en minutos: vibe coding sin programar** (`https://youtube.com/shorts/igV3GowwOdc`)
 4. **Temporada 4: Inteligencia artificial y Aules** (Episodios 19 al 24)
    - *Episodio 24:* **Evaluación con IA: evaluar mejor en menos tiempo** (`https://youtu.be/HVgvkiFPsgc`)
 
