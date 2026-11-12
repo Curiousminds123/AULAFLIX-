@@ -15,7 +15,7 @@ T1E2 - El mapa de la IA: qué herramienta usar y cuándo =
 T1E3 - El arte del prompt: pide y se te dará = 
 T1E4 - Tus datos, a salvo: privacidad y RGPD = 
 T1E5 - Alucinaciones y sesgos: cuando la IA miente = 
-T1E6 - Reglas del juego: ética de la IA en clase = 
+T1E6 - Reglas del juego: ética de la IA en clase = https://youtu.be/UWp1jk_GTFk
 
 TEMPORADA 2: Herramientas de IA para crear materiales
 T2E1 - Presentaciones en 5 minutos con Gamma = 
