@@ -96,6 +96,9 @@
   /* MODAL */
   .modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.85);display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:5vh 16px}
   .modal.open{display:flex}
+  .player-modal{z-index:150;align-items:center}
+  .player-sheet{width:min(1100px,96vw);background:#000;border-radius:10px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.8);position:relative}
+  .player-sheet .close{top:10px;right:10px}
   .sheet{width:min(860px,100%);background:var(--panel);border-radius:10px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.8);animation:pop .25s ease;position:relative}
   @keyframes pop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
   .sheet-top{position:relative}
@@ -106,6 +109,11 @@
   .close{position:absolute;top:14px;right:14px;z-index:10;width:38px;height:38px;border-radius:50%;border:none;background:#181818;color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center}
   .close:hover{background:#333}
   .sheet-body{padding:24px 30px 30px}
+  .video-player{position:relative;aspect-ratio:16/9;background:#000}
+  .video-player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .video-unavailable{padding:24px 30px;background:#0e0e13;color:var(--muted);line-height:1.5}
+  .btn-inline-play{background:var(--accent);color:#fff;border:0;border-radius:5px;padding:12px 18px;font-size:15px;font-weight:700}
+  .btn-inline-play:hover{background:var(--accent-hover)}
   .sheet-body .btns{margin-bottom:20px}
   .sheet-body h3{font-size:24px;margin-bottom:6px}
   .sheet-body .sub{color:var(--green);font-weight:700;font-size:14px;margin-bottom:14px}
@@ -224,6 +232,14 @@
 <!-- MODAL EPISODIO -->
 <div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
 
+<!-- REPRODUCTOR EMERGENTE -->
+<div class="modal player-modal" id="playerModal">
+  <div class="player-sheet">
+    <button class="close" onclick="closeVideoPlayer()">✕</button>
+    <div id="playerFrame"></div>
+  </div>
+</div>
+
 <!-- MODAL AUTENTICACIÓN (CONTRASEÑA 1234) -->
 <div class="modal" id="authModal">
   <div class="auth-card">
@@ -250,7 +266,7 @@
     <!-- CAJA DE CONFIGURACIÓN DE GITHUB -->
     <div class="gh-box">
       <h4>🐙 Sincronización automática con GitHub (Curiousminds123/AULAFLIX-)</h4>
-      <p>Para guardar los cambios directamente en tu repositorio de GitHub desde aquí, introduce tu <strong>GitHub Personal Access Token (PAT)</strong> con permisos de <code>repo</code> o <code>contents:write</code>. Se guardará de forma segura solo en tu navegador.</p>
+      <p>Para guardar los cambios directamente en GitHub, introduce un <strong>Personal Access Token</strong> con permiso de escritura de contenidos solo para este repositorio. Se conserva en la sesión de esta pestaña; no lo uses en un equipo público.</p>
       <div class="gh-inputs">
         <input type="password" id="ghTokenInput" placeholder="Pega tu GitHub Token (ghp_... o github_pat_...)" value="">
         <button class="f-btn blue" onclick="saveGhToken()">Guardar Token</button>
@@ -263,7 +279,7 @@
       <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Pega aquí el contenido de <code>Lista de videos para el catalogo de AULAXLIX.txt</code> o líneas con formato <code>T1E1 = https://youtu.be/...</code>:</p>
       <textarea id="bulkInput" placeholder="T1E1 = https://youtu.be/...&#10;T1E2 = https://youtu.be/..."></textarea>
       <div class="btn-row">
-        <button class="f-btn primary" onclick="processBulkLinks()">Procesar y aplicar enlaces</button>
+        <button class="f-btn primary" onclick="processBulkLinks()">Procesar y actualizar GitHub</button>
         <button class="f-btn" onclick="populateBulkFromCurrent()">Cargar enlaces actuales en el recuadro</button>
       </div>
     </div>
@@ -273,9 +289,8 @@
     <div class="manage-footer">
       <span style="font-size:13px;color:var(--muted)">Edocentia en vídeo · Materiales creados por Ana H. Iranzo</span>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="f-btn" onclick="saveAllFromManager(false)">Guardar en este navegador</button>
+        <button class="f-btn blue" onclick="saveAllFromManager()">Guardar y actualizar GitHub</button>
         <button class="f-btn" onclick="downloadCurrentHtml()">💾 Descargar index.html</button>
-        <button class="f-btn blue" onclick="saveAndPushToGitHub()">🚀 Guardar y subir a GitHub automáticamente</button>
       </div>
     </div>
   </div>
@@ -293,6 +308,7 @@ const GH_OWNER = "Curiousminds123";
 const GH_REPO = "AULAFLIX-";
 const GH_BRANCH = "main";
 const GH_PATH = "index.html";
+const GH_TOKEN_KEY = "edocentia_gh_token";
 
 const MODULES = [
   { id:"m1", n:1, name:"Fundamentos de IA y uso responsable",
@@ -314,7 +330,7 @@ const MODULES = [
       {t:"Alucinaciones y sesgos:|cuando la IA miente", e:"🕵️", url:"",
        d:"La IA puede inventarse datos con total seguridad. Aprende a detectar errores, contrastar fuentes y enseñar pensamiento crítico.",
        pts:["Por qué alucina la IA","Detectar sesgos en las respuestas","Estrategias de verificación"]},
-      {t:"Reglas del juego:|ética de la IA en clase", e:"⚖️", url:"",
+      {t:"Reglas del juego:|ética de la IA en clase", e:"⚖️", url:"https://youtu.be/UWp1jk_GTFk",
        d:"Cómo pactar con tu alumnado un uso honesto y responsable de la IA: normas de aula, autoría, plagio y evaluación justa.",
        pts:["Semáforo de uso de la IA en tareas","Citar y declarar el uso de IA","Plantilla de normas para el aula"]}
     ]},
@@ -337,7 +353,7 @@ const MODULES = [
       {t:"Imágenes con IA|que enamoran", e:"🖼️", url:"",
        d:"Crea ilustraciones, escenas y personajes para tus materiales con prompts visuales efectivos, respetando derechos y licencias.",
        pts:["Prompts para imágenes: estilo, encuadre, luz","Coherencia entre imágenes","Uso legal y responsable"]},
-      {t:"NotebookLM:|tus apuntes hechos podcast", e:"🎧", url:"",
+      {t:"NotebookLM:|tus apuntes hechos podcast", e:"🎧", url:"https://youtu.be/xxamZXiNTuU",
        d:"Sube tus documentos y conviértelos en resúmenes, guías de estudio, mapas mentales y podcasts generados por IA.",
        pts:["Crear un cuaderno con tus fuentes","Resumen en audio y mapa mental","Guías de estudio para el alumnado"]}
     ]},
@@ -380,7 +396,7 @@ const MODULES = [
       {t:"GIFT + IA:|100 preguntas en 1 minuto", e:"💯", url:"",
        d:"Genera bancos de preguntas en formato GIFT con IA e impórtalos en Aules para crear cuestionarios en segundos.",
        pts:["Sintaxis GIFT explicada","Prompt para generar preguntas","Importar al banco de preguntas"]},
-      {t:"Actividades|interactivas que enganchan", e:"🎯", url:"",
+      {t:"Actividades|interactivas que enganchan", e:"🎯", url:"https://youtu.be/HVgvkiFPsgc",
        d:"H5P, lecciones, glosarios y foros potenciados con IA para un aula virtual dinámica y participativa.",
        pts:["H5P: vídeo interactivo y más","Lecciones con ramificaciones","Foros y glosarios colaborativos"]},
       {t:"Evaluación con IA:|evaluar mejor en menos tiempo", e:"📝", url:"https://youtu.be/HVgvkiFPsgc",
@@ -480,7 +496,7 @@ function handleManagerClick(){
 
 function handleDownloadOrPush(){
   requireAdmin(() => {
-    const token = localStorage.getItem("edocentia_gh_token");
+    const token = sessionStorage.getItem(GH_TOKEN_KEY);
     if(token){
       saveAndPushToGitHub();
     } else {
@@ -516,6 +532,33 @@ function coverHTML(m,i){
   </div>`;
 }
 const plain = v => v.t.replace("|"," ");
+function embeddedVideoUrl(value){
+  try{
+    const parsed = new URL(value);
+    const host = parsed.hostname.toLowerCase().replace(/^www\./, "");
+    if(host === "youtu.be" || host === "youtube.com" || host === "m.youtube.com" || host === "youtube-nocookie.com"){
+      const parts = parsed.pathname.split("/").filter(Boolean);
+      const id = host === "youtu.be" ? parts[0] :
+        parsed.searchParams.get("v") || (["embed","shorts","live"].includes(parts[0]) ? parts[1] : "");
+      return id && /^[A-Za-z0-9_-]{11}$/.test(id)
+        ? `https://www.youtube-nocookie.com/embed/${id}?rel=0`
+        : "";
+    }
+    if(host === "vimeo.com" || host === "player.vimeo.com"){
+      const match = parsed.pathname.match(/(?:^|\/)(?:video\/)?(\d+)\/?$/);
+      return match ? `https://player.vimeo.com/video/${match[1]}` : "";
+    }
+  }catch(e){}
+  return "";
+}
+
+function videoPlayerHTML(url,title){
+  if(!url) return "";
+  const embedUrl = embeddedVideoUrl(url);
+  return embedUrl
+    ? `<div class="video-player"><iframe src="${embedUrl}" title="${title}" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`
+    : `<div class="video-unavailable">Este enlace no es de YouTube o Vimeo y no se puede reproducir aquí. Añade un enlace compatible para ver el vídeo incrustado.</div>`;
+}
 
 /* ---------- HERO ---------- */
 function renderHero(){
@@ -527,7 +570,7 @@ function renderHero(){
       <h1>Inteligencia artificial<br>para docentes</h1>
       <p>4 temporadas, 24 episodios y un objetivo: que crees materiales, juegos y apps para tus clases y los integres en Aules. Empieza por el episodio 1: <strong>${plain(v)}</strong>.</p>
       <div class="btns">
-        <a class="btn btn-play ${u?"":"disabled"}" href="${u||"#"}" target="_blank" rel="noopener">▶ Reproducir</a>
+        <button class="btn btn-play ${u?"":"disabled"}" ${u?'onclick="openVideoPlayer(0,0)"':''}>▶ Reproducir</button>
         <button class="btn btn-info" onclick="openModal(0,0)">ⓘ Más información</button>
       </div>
     </div>`;
@@ -582,10 +625,9 @@ function openModal(mi,i){
         <label>⚙️ Enlace del vídeo (Modo Docente activo):</label>
         <div class="f">
           <input id="urlIn" type="url" placeholder="https://youtu.be/..." value="${u}">
-          <button onclick="setLinkSingle('${key}',${mi},${i})">Guardar</button>
+          <button class="btn-gh-push" onclick="setLinkAndPushSingle('${key}',${mi},${i})">🚀 Guardar y actualizar GitHub</button>
         </div>
         <div class="edit-subactions">
-          <button class="btn-gh-push" onclick="setLinkAndPushSingle('${key}',${mi},${i})">🚀 Guardar y subir a GitHub</button>
           <button class="btn-download-html" onclick="downloadCurrentHtml()">💾 Descargar index.html</button>
         </div>
       </div>`;
@@ -599,9 +641,7 @@ function openModal(mi,i){
   document.getElementById("sheet").innerHTML = `
     <div class="sheet-top">${coverHTML(m,i)}<button class="close" onclick="closeModal()">✕</button></div>
     <div class="sheet-body">
-      <div class="btns">
-        <a class="btn btn-play ${u?"":"disabled"}" href="${u||"#"}" target="_blank" rel="noopener">▶ ${u?"Ver en YouTube":"Próximamente"}</a>
-      </div>
+      ${u?`<button class="btn-inline-play" onclick="openVideoPlayer(${mi},${i})">▶ Reproducir vídeo aquí</button>`:""}
       <h3>${plain(v)}</h3>
       <div class="sub">Temporada ${m.n} · Episodio ${i+1} · ${m.name}</div>
       <p>${v.d}</p>
@@ -613,16 +653,20 @@ function openModal(mi,i){
 }
 function closeModal(){ modal.classList.remove("open"); document.body.style.overflow=""; }
 modal.addEventListener("click",e=>{ if(e.target===modal) closeModal(); });
-document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeModal(); closeManagerModal(); closeAuthModal(); } });
-
-function setLinkSingle(key,mi,i){
-  const val=document.getElementById("urlIn").value.trim();
-  saveLink(key,val,mi,i);
-  renderRows(document.getElementById("q").value);
-  if(mi===0&&i===0) renderHero();
-  openModal(mi,i);
-  toast(val ? "Enlace guardado en navegador" : "Enlace eliminado");
+const playerModal = document.getElementById("playerModal");
+function openVideoPlayer(mi,i){
+  const video = MODULES[mi].videos[i];
+  document.getElementById("playerFrame").innerHTML = videoPlayerHTML(urlOf(MODULES[mi],i),plain(video));
+  playerModal.classList.add("open");
+  document.body.style.overflow="hidden";
 }
+function closeVideoPlayer(){
+  playerModal.classList.remove("open");
+  document.getElementById("playerFrame").innerHTML = "";
+  if(!document.querySelector(".modal.open")) document.body.style.overflow="";
+}
+playerModal.addEventListener("click",e=>{ if(e.target===playerModal) closeVideoPlayer(); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeVideoPlayer(); closeModal(); closeManagerModal(); closeAuthModal(); } });
 
 function setLinkAndPushSingle(key,mi,i){
   const val=document.getElementById("urlIn").value.trim();
@@ -637,7 +681,7 @@ function setLinkAndPushSingle(key,mi,i){
 const manageModal = document.getElementById("manageModal");
 function openManagerModal(){
   renderManagerGrid();
-  const token = localStorage.getItem("edocentia_gh_token") || "";
+  const token = sessionStorage.getItem(GH_TOKEN_KEY) || "";
   document.getElementById("ghTokenInput").value = token;
   manageModal.classList.add("open");
   document.body.style.overflow="hidden";
@@ -675,15 +719,15 @@ function renderManagerGrid(){
 function saveGhToken(){
   const token = document.getElementById("ghTokenInput").value.trim();
   if(!token){
-    localStorage.removeItem("edocentia_gh_token");
+    sessionStorage.removeItem(GH_TOKEN_KEY);
     toast("Token de GitHub eliminado");
   } else {
-    localStorage.setItem("edocentia_gh_token", token);
-    toast("🔑 Token de GitHub guardado en tu navegador");
+    sessionStorage.setItem(GH_TOKEN_KEY, token);
+    toast("🔑 Token de GitHub guardado hasta cerrar esta pestaña");
   }
 }
 
-function saveAllFromManager(andDownload = false){
+function saveAllFromManager(){
   const inputs = document.querySelectorAll("#manageGrid input[data-key]");
   inputs.forEach(inp => {
     const key = inp.dataset.key;
@@ -695,10 +739,7 @@ function saveAllFromManager(andDownload = false){
   renderRows(document.getElementById("q").value);
   renderHero();
   renderManagerGrid();
-  toast("¡Todos los enlaces han sido guardados localmente!");
-  if(andDownload){
-    downloadCurrentHtml();
-  }
+  saveAndPushToGitHub();
 }
 
 function populateBulkFromCurrent(){
@@ -764,7 +805,12 @@ function processBulkLinks(){
   renderRows(document.getElementById("q").value);
   renderHero();
   renderManagerGrid();
-  toast(`¡Se han importado y aplicado ${count} enlaces!`);
+  if(count){
+    toast(`Se han aplicado ${count} enlaces. Sincronizando con GitHub...`);
+    saveAndPushToGitHub();
+  } else {
+    toast("No se encontraron enlaces válidos para importar.");
+  }
 }
 
 /* ---------- GENERAR HTML ACTUALIZADO ---------- */
@@ -803,7 +849,7 @@ function downloadCurrentHtml(){
 
 /* ---------- SINCRONIZACIÓN AUTOMÁTICA CON GITHUB REST API ---------- */
 async function saveAndPushToGitHub(){
-  let token = localStorage.getItem("edocentia_gh_token");
+  let token = sessionStorage.getItem(GH_TOKEN_KEY);
   if(!token){
     token = prompt("Introduce tu Personal Access Token de GitHub para actualizar el repositorio directamente:");
     if(!token || !token.trim()){
@@ -811,7 +857,7 @@ async function saveAndPushToGitHub(){
       return;
     }
     token = token.trim();
-    localStorage.setItem("edocentia_gh_token", token);
+    sessionStorage.setItem(GH_TOKEN_KEY, token);
   }
 
   // Guardar inputs si estamos en el modal de gestión
@@ -878,8 +924,7 @@ async function saveAndPushToGitHub(){
     renderHero();
   } catch(error) {
     console.error(error);
-    toast(`⚠️ Error en GitHub: ${error.message}. Descargando index.html...`);
-    downloadCurrentHtml();
+    toast(`⚠️ No se pudo actualizar GitHub: ${error.message}. Los cambios siguen guardados en este navegador.`);
   }
 }
 

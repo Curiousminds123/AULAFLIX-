@@ -23,7 +23,7 @@ T2E2 - Copilot: tu ayudante en Microsoft 365 =
 T2E3 - Gemini: de la idea al material = 
 T2E4 - Canva Magic Studio: diseña sin ser diseñador = 
 T2E5 - Imágenes con IA que enamoran = 
-T2E6 - NotebookLM: tus apuntes hechos podcast = 
+T2E6 - NotebookLM: tus apuntes hechos podcast = https://youtu.be/xxamZXiNTuU
 
 TEMPORADA 3: Recursos interactivos con vibe coding
 T3E1 - Apps en minutos: vibe coding sin programar = https://youtube.com/shorts/igV3GowwOdc
