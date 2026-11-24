@@ -581,7 +581,9 @@ function renderRows(filter=""){
   const f=filter.trim().toLowerCase();
   let html="", total=0;
   MODULES.forEach((m,mi)=>{
-    const cards = m.videos.map((v,i)=>({v,i})).filter(({v})=>!f || (plain(v)+" "+v.d).toLowerCase().includes(f));
+    const cards = m.videos.map((v,i)=>({v,i}))
+      .filter(({v})=>!f || (plain(v)+" "+v.d).toLowerCase().includes(f))
+      .sort((a,b)=>Number(Boolean(urlOf(m,b.i)))-Number(Boolean(urlOf(m,a.i))) || a.i-b.i);
     if(!cards.length) return;
     total+=cards.length;
     html += `<section class="row" id="${m.id}">
