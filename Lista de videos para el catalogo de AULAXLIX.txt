@@ -11,7 +11,7 @@
 
 TEMPORADA 1: Fundamentos de IA y uso responsable
 T1E1 - IA en el aula: lo que nadie te ha contado = https://youtu.be/Gcpd-rXg8Bk
-T1E2 - El mapa de la IA: qué herramienta usar y cuándo = 
+T1E2 - Preparar a los alumnos para el futuro del empleo = https://youtu.be/OCGlcu5vSXE
 T1E3 - El arte del prompt: pide y se te dará = 
 T1E4 - Tus datos, a salvo: privacidad y RGPD = 
 T1E5 - Alucinaciones y sesgos: cuando la IA miente = 

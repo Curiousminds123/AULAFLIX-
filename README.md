@@ -29,6 +29,7 @@ Para proteger los enlaces y evitar modificaciones accidentales o por parte del a
 El curso se compone de **4 temporadas** y **24 episodios**:
 
 1. **Temporada 1: Fundamentos de IA y uso responsable** (Episodios 1 al 6)
+   - *Episodio 2:* **Preparar a los alumnos para el futuro del empleo** (`https://youtu.be/OCGlcu5vSXE`)
    - *Episodio 6:* **Reglas del juego: ética de la IA en clase** (`https://youtu.be/UWp1jk_GTFk`)
 2. **Temporada 2: Herramientas de IA para crear materiales** (Episodios 7 al 12)
    - *Episodio 12:* **NotebookLM: tus apuntes hechos podcast** (`https://youtu.be/xxamZXiNTuU`)
